@@ -35,7 +35,7 @@ const LoginButton = (props) => {
       style={[LoginStyles.button, LoginStyles.loginButton]}
       onPress={handleLogin}
     >
-      <Text style={LoginStyles.buttonText}>Login</Text>
+      <Text style={LoginStyles.buttonTextWhite}>Login</Text>
     </Pressable>
   );
 };
@@ -65,7 +65,7 @@ const RegisterButton = (props) => {
       style={[LoginStyles.button, LoginStyles.registerButton]}
       onPress={handleSignUp}
     >
-      <Text style={LoginStyles.buttonText}>Register</Text>
+      <Text style={LoginStyles.buttonTextBlack}>Register</Text>
     </Pressable>
   );
 };

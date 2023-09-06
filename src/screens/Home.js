@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StatusBar,
-} from "react-native";
+import { SafeAreaView, View, Text, StatusBar } from "react-native";
 
 import HomeStyles from "../styles/HomeStyles";
 
@@ -22,7 +17,7 @@ const Home = () => {
   const [newTaskText, onNewTaskTextChange] = React.useState();
   var [streakNum, setStreakNum] = React.useState(0);
   function IncrementStreak() {
-    setStreakNum(streakNum+1)
+    setStreakNum(streakNum + 1);
   }
   function AddTask() {
     console.log(newTaskText);
@@ -35,19 +30,24 @@ const Home = () => {
   return (
     <SafeAreaView style={HomeStyles.container}>
       <View style={HomeStyles.header}>
-        <StreakCounter value={streakNum}/>
+        <StreakCounter value={streakNum} />
         <ProgressWidget />
-        <StudyButton incrementer={IncrementStreak}/>
+        <StudyButton incrementer={IncrementStreak} />
       </View>
       <Text style={HomeStyles.tasksHeader}>Tasks:</Text>
       <View style={HomeStyles.taskWrapper}>
         <View style={HomeStyles.addTask}>
-          <TextField type={"Task Name"} addTaskFunc={AddTask} text={newTaskText} onChangeText={onNewTaskTextChange} />
+          <TextField
+            type={"Task Name"}
+            addTaskFunc={AddTask}
+            text={newTaskText}
+            onChangeText={onNewTaskTextChange}
+          />
         </View>
-        <AddTaskButton onPressFunc={AddTask} taskData={LISTDATA}/>
+        <AddTaskButton onPressFunc={AddTask} taskData={LISTDATA} />
       </View>
       <View style={HomeStyles.body}>
-        <TaskList data={LISTDATA}/>
+        <TaskList data={LISTDATA} />
       </View>
     </SafeAreaView>
   );

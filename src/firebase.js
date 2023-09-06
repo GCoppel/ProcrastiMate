@@ -1,5 +1,5 @@
 import * as firebase from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+import { getAuth } from "firebase/auth"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {

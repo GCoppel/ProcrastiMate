@@ -5,7 +5,7 @@ const LoginStyles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   logoImg: {
     resizeMode: 'contain',
@@ -30,16 +30,23 @@ const LoginStyles = StyleSheet.create({
     width: 120,
     borderRadius: 5,
     marginVertical: 5,
-    borderWidth: 1,
+    borderWidth: 2,
   },
   loginButton: {
     backgroundColor: 'black',
   },
   registerButton: {
-    backgroundColor: 'black',
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: 'black'
   },
-  buttonText: {
+  buttonTextWhite: {
     color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  buttonTextBlack: {
+    color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
   },
