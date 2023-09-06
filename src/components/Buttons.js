@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, Pressable } from "react-native";
 import LoginStyles from "../styles/LoginStyles";
 import { useNavigation } from "@react-navigation/core";
-import { auth } from "../firebase";
+import { auth } from "../firebase/FirebaseAuthenticator";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

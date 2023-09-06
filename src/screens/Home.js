@@ -26,6 +26,7 @@ const Home = () => {
       taskPriority: 1,
     };
     LISTDATA.push(newItem);
+    onNewTaskTextChange("")
   }
   return (
     <SafeAreaView style={HomeStyles.container}>

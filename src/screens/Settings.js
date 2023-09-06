@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import ToggleItem from "../components/ToggleItem";
-import { auth } from "../firebase";
+import { auth } from "../firebase/FirebaseAuthenticator";
 import {
     signOut,
     onAuthStateChanged,
@@ -32,7 +32,7 @@ const SettingsList = () => {
   return(
     <View style={styles.settingsListContainer}>
       <ToggleItem text={"Dark Mode"} defaultState={false} enabled={true} />
-      <ToggleItem text={"Notifications"} defaultState={false} enabled={true} />
+      <ToggleItem text={"Notifications"} defaultState={true} enabled={true} />
       <ToggleItem text={"Third Setting"} defaultState={false} enabled={true} />
     </View>
   )
