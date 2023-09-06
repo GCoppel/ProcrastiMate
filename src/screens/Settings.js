@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Checkbox from "expo-checkbox";
 import { useNavigation } from "@react-navigation/core";
+import ToggleItem from "../components/ToggleItem";
 import { auth } from "../firebase";
 import {
     signOut,
@@ -9,7 +9,6 @@ import {
   } from "firebase/auth";
 
 const Settings = () => {
-    const [isChecked, setChecked] = useState(false);
     const navigation = useNavigation();
 
     const SignOut = () => {
@@ -20,14 +19,8 @@ const Settings = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Hello!</Text>
-      <Checkbox
-        style={styles.checkbox}
-        value={isChecked}
-        disabled={true}
-        onValueChange={setChecked}
-        color={isChecked ? "#000" : undefined}
-      />
+      <Text style={styles.settingsTitle}>Settings</Text>
+      <SettingsList />
       <TouchableOpacity onPress={SignOut} style={styles.signOutBtn}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
@@ -35,15 +28,28 @@ const Settings = () => {
   );
 };
 
+const SettingsList = () => {
+  return(
+    <View style={styles.settingsListContainer}>
+      <ToggleItem text={"Dark Mode"} defaultState={false} enabled={true} />
+      <ToggleItem text={"Notifications"} defaultState={false} enabled={true} />
+      <ToggleItem text={"Third Setting"} defaultState={false} enabled={true} />
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
+  settingsTitle: {
+    fontSize: 30,
+    fontWeight: 'bold'
+  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  checkbox: {
-    width: 25,
-    height: 25
+  settingsListContainer: {
+    alignItems: 'flex-start',
   },
   signOutBtn: {
     width: 150,

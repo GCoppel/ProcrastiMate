@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Checkbox from "expo-checkbox";
 
 const Study = () => {
     const [isChecked, setChecked] = useState(false);
@@ -11,13 +10,6 @@ const Study = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Hello!</Text>
-      <Checkbox
-        style={styles.checkbox}
-        value={isChecked}
-        onValueChange={setChecked}
-        color={isChecked ? "#000" : undefined}
-      />
       <TouchableOpacity onPress={StudyFunc} style={styles.signOutBtn}>
         <Text style={styles.signOutText}>Study</Text>
       </TouchableOpacity>
