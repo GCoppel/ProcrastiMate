@@ -20,6 +20,10 @@ else {
     app = firebase.getApp();
 }
 
-const auth = getAuth(app);
+let auth
+try{( auth = getAuth(app))}
+catch(error){
+  console.log(error)
+}
 
 export { auth }

@@ -31,9 +31,9 @@ const Settings = () => {
 const SettingsList = () => {
   return(
     <View style={styles.settingsListContainer}>
-      <ToggleItem text={"Dark Mode"} defaultState={false} enabled={true} />
-      <ToggleItem text={"Notifications"} defaultState={true} enabled={true} />
-      <ToggleItem text={"Third Setting"} defaultState={false} enabled={true} />
+      <ToggleItem text={"Dark Mode"} defaultState={false} disabled={true} />
+      <ToggleItem text={"Notifications"} defaultState={true} disabled={false} />
+      <ToggleItem text={"Third Setting"} defaultState={false} disabled={false} />
     </View>
   )
 }
