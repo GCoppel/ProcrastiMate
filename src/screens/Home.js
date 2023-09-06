@@ -1,9 +1,6 @@
 import React from "react";
 import { SafeAreaView, View, Text, StatusBar } from "react-native";
-
 import HomeStyles from "../styles/HomeStyles";
-
-import { MaterialIcons } from "@expo/vector-icons";
 import TextField from "../components/TextField";
 import TaskList from "../components/TaskList";
 import ProgressWidget from "../components/ProgressWidget";
@@ -15,6 +12,7 @@ const LISTDATA = [];
 
 const Home = () => {
   const [newTaskText, onNewTaskTextChange] = React.useState();
+  const [newTaskPriority, onNewTaskPriorityChange] = React.useState();
   var [streakNum, setStreakNum] = React.useState(0);
   function IncrementStreak() {
     setStreakNum(streakNum + 1);
@@ -23,10 +21,11 @@ const Home = () => {
     console.log(newTaskText);
     let newItem = {
       taskName: newTaskText,
-      taskPriority: 1,
+      taskPriority: newTaskPriority,
     };
     LISTDATA.push(newItem);
     onNewTaskTextChange("")
+    onNewTaskPriorityChange("")
   }
   return (
     <SafeAreaView style={HomeStyles.container}>
@@ -40,9 +39,15 @@ const Home = () => {
         <View style={HomeStyles.addTask}>
           <TextField
             type={"Task Name"}
-            addTaskFunc={AddTask}
+            entryType={'default'}
             text={newTaskText}
             onChangeText={onNewTaskTextChange}
+          />
+          <TextField
+            type={"Priority (Optional)"}
+            entryType={'number-pad'}
+            text={newTaskPriority}
+            onChangeText={onNewTaskPriorityChange}
           />
         </View>
         <AddTaskButton onPressFunc={AddTask} taskData={LISTDATA} />
