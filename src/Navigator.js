@@ -2,8 +2,8 @@ import React from "react";
 import {} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./screens/Home";
-import Login from "./screens/Login";
 import Settings from "./screens/Settings";
+import Study from "./screens/Study";
 
 const Navigator = () => {
   const TabBar = createBottomTabNavigator();
@@ -14,12 +14,12 @@ const Navigator = () => {
         name="Home"
         component={Home}
       />
-            <TabBar.Screen
+      <TabBar.Screen
         options={{ headerShown: false }}
         name="Study"
-        component={Home}
+        component={Study}
       />
-            <TabBar.Screen
+      <TabBar.Screen
         options={{ headerShown: false }}
         name="Settings"
         component={Settings}
