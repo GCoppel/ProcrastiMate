@@ -1,27 +1,29 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-const Study = () => {
-  const [isChecked, setChecked] = useState(false);
+import ProgressWheel from "../components/ProgressWheel";
 
-  const StudyFunc = () => {
-    console.log("Studying");
-  };
+const Study = () => {
 
   const motivationalMessages = [
     "You're doing great, sweetie!",
     "Keep up the good work!",
     "Proud of you, son.",
-  ]
+    "What're you studying?",
+    "It's a good day for studying.",
+    "Welcome back!",
+    "What're we working on today?",
+  ];
 
-  let motivationalMessage = motivationalMessages[Math.floor(Math.random()*motivationalMessages.length)];
-  
+  let motivationalMessage =
+    motivationalMessages[
+      Math.floor(Math.random() * motivationalMessages.length)
+    ];
+
   return (
     <View style={styles.container}>
       <Text style={styles.motivationalMessageText}>{motivationalMessage}</Text>
-      <TouchableOpacity onPress={StudyFunc} style={styles.studyButton}>
-        <Text style={styles.studyButtonText}>GO</Text>
-      </TouchableOpacity>
+      <ProgressWheel percent={25}/>
     </View>
   );
 };
@@ -34,9 +36,9 @@ const styles = StyleSheet.create({
   },
   motivationalMessageText: {
     fontSize: 25,
-    flexWrap: 'wrap',
-    width: '75%',
-    textAlign: 'center'
+    flexWrap: "wrap",
+    width: "75%",
+    textAlign: "center",
   },
   studyButton: {
     marginTop: 20,
@@ -47,14 +49,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 100,
     borderWidth: 2,
-    borderColor: 'black',
+    borderColor: "black",
     backgroundColor: "lightgreen",
   },
   studyButtonText: {
     fontSize: 35,
     fontWeight: "bold",
-    flexWrap: 'wrap',
-    textAlign: 'center',
+    flexWrap: "wrap",
+    textAlign: "center",
   },
 });
 
