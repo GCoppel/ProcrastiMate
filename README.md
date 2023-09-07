@@ -6,18 +6,37 @@ ___
 - A visual overhaul of the entire application is coming, but functionality is the current focus.
 - The "Login" screen is functional.
   - Users can create a new account using email and password.
+    - Passwords are automatically hidden as the user types.
   - Users can logo into their existing account using email and password.
+    - The default Android/iOS "email" keyboard is used.
   - Accounts are managed by Google's FireBase cloud system.
   - Account Requirements:
     - Cannot use emails already associated with an account.
     - Emails must be in the form of ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov)$
     - Passwords must be at least 6 characters
 - Upon successful login, the user is taken to the "Home" screen.
-  - This is where the user's To-Do list will live. Users can use the input field and "add" button to add tasks to the list.
+  - This is where the user's To-Do list will live. Users can use the input fields and "add" button to add tasks to the list.
+    - The first field is the task name.
+    - The second field is the task priority. If this is left blank, no priority value will be added.
+      - Currently limited to a single character, meaning priority ranges from 0-9
+      - Will be replaced with a series of 5 buttons, limiting the range from 1-5
     - There is currently no way to save, edit, or delete tasks.
   - There is a header panel which holds information about the user's Study Streak and weekly study progress.
     - Currently, there is a counter which can be incremented using the "Study" buton.
     - This will be completely changed soon, for now it is just a placeholder.
+- Tne next screen, accessible by the navigation bar at the bottom, is the "Study" screen.
+  - This is where the user will be able to start their study timer and complete their weekly study goal.
+  - At the top is a randomized motivational message.
+  - In the center of the screen is the "Go" or "Start" button (haven't decided what to label it as yet)
+    - Currently non-functional, but will create a new "Study Session" and start the timer for the session.
+- The third and final screen is the Settings screen.
+  - Here, the user will be able to modify the app's appearance and behavior
+  - There are currently three checkboxes, none of which do anything at the moment
+    - "Dark Mode" -> The most important feature of any app. You know what this does.
+    - "Notification" -> App notifications will only be sent if this feature is enabled.
+    - "Third Option" -> I'll probably come up with at least one more setting toggle later.
+  - Sign out button
+    - Signs the active user out of the Firebase authenticator instance and returns them to the Login Screen.
 ___
 ## How to Test Using Expo
 ProcrastiMate is built using Expo. Expo is a populat React Native build tool, allowing for faster and easier testing with real devices. 
