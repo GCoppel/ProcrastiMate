@@ -14,7 +14,7 @@ const Login = () => {
     <SafeAreaView style={LoginStyles.container}>
       <Image style={LoginStyles.logoImg} source={require('../../assets/Logo_Variants/ProcrastiMate-logos_black.png')} />
       <Text style={LoginStyles.welcome}>Welcome to ProcrastiMate</Text>
-      <TextField text={userEmail} onChangeText={onChangeUserEmail} type={"username"} />
+      <TextField text={userEmail} onChangeText={onChangeUserEmail} type={"email"} entryType={"email-address"} />
       <TextField text={userPassword} onChangeText={onChangeUserPassword} type={"password"} />
       <LoginButton email={userEmail} password={userPassword}/>
       <RegisterButton email={userEmail} password={userPassword}/>

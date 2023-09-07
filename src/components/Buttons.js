@@ -15,7 +15,7 @@ const LoginButton = (props) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.replace("Home");
+        navigation.replace("Navigator");
       }
     });
 
@@ -46,7 +46,7 @@ const RegisterButton = (props) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.replace("Home");
+        navigation.replace("Navigator");
       }
     });
 

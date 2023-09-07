@@ -13,7 +13,8 @@ const Navigator = () => {
       screenOptions={{
         tabBarActiveTintColor: "black",
         tabBarHideOnKeyboard: true,
-        tabBarItemStyle: {paddingVertical: 5},
+        tabBarLabelPosition: 'below-icon',
+        tabBarItemStyle: { paddingVertical: 5 },
         tabBarLabelStyle: { fontWeight: "bold", fontSize: 12 },
         tabBarStyle: { height: "7%" },
       }}

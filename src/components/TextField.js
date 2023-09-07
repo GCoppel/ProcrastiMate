@@ -9,11 +9,12 @@ const TextField = (props) => {
     <View>
       <TextInput
         style={LoginStyles.input}
-        keyboardType={entryType=="number-pad"? 'number-pad' : 'default'}
+        keyboardType={entryType? entryType : 'default'}
         onChangeText={(text) => {onChangeText(text)}}
         placeholder={type}
         value={text}
-        maxLength={entryType=="default"? 25 : 1}
+        secureTextEntry={type=="password"? true : false}
+        maxLength={entryType=="number-pad"? 1 : 25}
       />
     </View>
   );
