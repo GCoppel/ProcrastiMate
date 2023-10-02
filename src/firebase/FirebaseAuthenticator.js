@@ -1,5 +1,6 @@
 import * as firebase from "firebase/app";
-import { getAuth } from "firebase/auth"
+import { getAuth } from "firebase/auth";
+import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,4 +27,12 @@ catch(error){
   console.log(error)
 }
 
-export { auth }
+const username = auth.currentUser
+
+let database
+try{( database = getFirestore(app))}
+catch(error){
+  console.log(error)
+}
+
+export { auth, username, database }

@@ -7,8 +7,12 @@ import ProgressWidget from "../components/ProgressWidget";
 import StreakCounter from "../components/StreakCounter";
 import AddTaskButton from "../components/AddTaskButton";
 import StudyButton from "../components/StudyButton";
+import { auth, username, database } from "../firebase/FirebaseAuthenticator";
+import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
 const LISTDATA = [];
+
+let counter = 0;
 
 const Home = () => {
   const [newTaskText, onNewTaskTextChange] = React.useState();
@@ -18,14 +22,25 @@ const Home = () => {
     setStreakNum(streakNum + 1);
   }
   function AddTask() {
-    console.log(newTaskText);
     let newItem = {
       taskName: newTaskText,
       taskPriority: newTaskPriority,
     };
-    LISTDATA.push(newItem);
+    LISTDATA.push(newItem)
+    ToFireStore(newItem)
     onNewTaskTextChange("")
     onNewTaskPriorityChange("")
+  }
+
+  async function ToFireStore(Message){
+    const msgID = "msg_"+counter
+    await setDoc(doc(database, auth.currentUser.uid, "Todos"), {
+      [msgID]: {
+        name: Message.taskName,
+        priority: Message.taskPriority
+      }
+    }, {merge: true})
+    counter = counter + 1;
   }
   return (
     <SafeAreaView style={HomeStyles.container}>
