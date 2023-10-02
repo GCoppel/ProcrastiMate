@@ -1,11 +1,9 @@
 import React from "react";
 import { SafeAreaView, View, Text, StyleSheet, Image } from "react-native";
-import { Feather } from "@expo/vector-icons";
-
 import LoginStyles from "../styles/LoginStyles";
-
 import TextField from "../components/TextField";
 import { LoginButton, RegisterButton } from "../components/Buttons";
+// import { ReactNativeAsyncStorage } from "firebase/auth";
 
 const Login = () => {
   const [userEmail, onChangeUserEmail] = React.useState('');

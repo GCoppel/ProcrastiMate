@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList, ScrollView } from "react-native";
+import { SafeAreaView, Text, FlatList, ScrollView } from "react-native";
 
 import Task from "./Task";
 
@@ -7,7 +7,7 @@ import HomeStyles from "../styles/HomeStyles";
 
 const TaskList = (props) => {
   return (
-    <ScrollView>
+    <SafeAreaView >
       <FlatList
         style={HomeStyles.taskList}
         data={props.data}
@@ -16,7 +16,7 @@ const TaskList = (props) => {
         keyExtractor={(item) => item.taskName}
         extraData={props.addTaskFunc}
       />
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
