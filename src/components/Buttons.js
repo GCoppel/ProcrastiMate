@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Text, Pressable } from "react-native";
 import LoginStyles from "../styles/LoginStyles";
 import { useNavigation } from "@react-navigation/core";
-import { auth } from "../firebase/FirebaseAuthenticator";
+import { auth } from "../firebase/FirebaseInitialize";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+import { SetDefaultSettings } from "../firebase/FirebaseFirestore";
 
 const LoginButton = (props) => {
   const { email, password } = props;
@@ -57,6 +58,7 @@ const RegisterButton = (props) => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         alert("Successfully registered with: " + user.email);
+        SetDefaultSettings();
       })
       .catch((error) => alert(error.message));
   };

@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import ToggleItem from "../components/ToggleItem";
-import { auth } from "../firebase/FirebaseAuthenticator";
+import { auth } from "../firebase/FirebaseInitialize";
 import { signOut, onAuthStateChanged } from "firebase/auth";
+import { UpdateSettings } from "../firebase/FirebaseFirestore";
 
 const Settings = () => {
   const navigation = useNavigation();
+
+  const SaveSettings = () => {
+    UpdateSettings("Anglais", true, false, false)
+  }
 
   const SignOut = () => {
     console.log("Signing out user");
@@ -18,6 +23,9 @@ const Settings = () => {
     <View style={styles.container}>
       <Text style={styles.settingsTitle}>Settings</Text>
       <SettingsList />
+      <TouchableOpacity onPress={SaveSettings} style={styles.signOutBtn}>
+        <Text style={styles.signOutText}>Save Settings</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={SignOut} style={styles.signOutBtn}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>

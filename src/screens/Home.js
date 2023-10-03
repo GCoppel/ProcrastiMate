@@ -3,11 +3,11 @@ import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HomeStyles from "../styles/HomeStyles";
 import TextField from "../components/TextField";
 import TaskList from "../components/TaskList";
-import ProgressWidget from "../components/ProgressWidget";
 import StreakCounter from "../components/StreakCounter";
 import AddTaskButton from "../components/AddTaskButton";
 import StudyButton from "../components/StudyButton";
-import { auth, username, database } from "../firebase/FirebaseAuthenticator";
+import { auth, database } from "../firebase/FirebaseInitialize";
+import { AddTaskToFirestore } from '../firebase/FirebaseFirestore'
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
 const LISTDATA = [];
@@ -27,26 +27,16 @@ const Home = () => {
       taskPriority: newTaskPriority,
     };
     LISTDATA.push(newItem)
-    ToFireStore(newItem)
+    AddTaskToFirestore(newItem.taskName, newItem.taskPriority, counter)
+    counter = counter + 1;
     onNewTaskTextChange("")
     onNewTaskPriorityChange("")
   }
-
-  async function ToFireStore(Message){
-    const msgID = "msg_"+counter
-    await setDoc(doc(database, auth.currentUser.uid, "Todos"), {
-      [msgID]: {
-        name: Message.taskName,
-        priority: Message.taskPriority
-      }
-    }, {merge: true})
-    counter = counter + 1;
-  }
+  
   return (
     <SafeAreaView style={HomeStyles.container}>
       <View style={HomeStyles.header}>
         <StreakCounter value={streakNum} />
-        <ProgressWidget />
         <StudyButton incrementer={IncrementStreak} />
       </View>
       <Text style={HomeStyles.tasksHeader}>Tasks:</Text>

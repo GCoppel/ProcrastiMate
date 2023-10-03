@@ -27,12 +27,10 @@ catch(error){
   console.log(error)
 }
 
-const username = auth.currentUser
-
 let database
 try{( database = getFirestore(app))}
 catch(error){
   console.log(error)
 }
 
-export { auth, username, database }
+export { auth, database }
