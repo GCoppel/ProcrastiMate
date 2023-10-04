@@ -3,8 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import Checkbox from "expo-checkbox";
 
 const ToggleItem = (props) => {
-  const { text, defaultState, disabled } = props;
-  const [isChecked, setChecked] = useState(defaultState);
+  const { text, isChecked, setChecked, defaultState, disabled } = props;
   return (
     <View style={styles.toggleItemContainer}>
       <Checkbox

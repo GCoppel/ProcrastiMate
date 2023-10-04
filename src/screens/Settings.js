@@ -1,22 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import ToggleItem from "../components/ToggleItem";
 import { auth } from "../firebase/FirebaseInitialize";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { UpdateSettings } from "../firebase/FirebaseFirestore";
+import { UpdateSettings, GetSettings } from "../firebase/FirebaseFirestore";
 
 const Settings = () => {
-  const navigation = useNavigation();
-
-  const SaveSettings = () => {
-    UpdateSettings("Anglais", true, false, false)
+  async function GetFirestoreSettings() {
+    const firestoreSettings = await GetSettings();
+    console.log(firestoreSettings.Language)
+    return firestoreSettings.DarkMode
   }
 
-  const SignOut = () => {
-    console.log("Signing out user");
+  const navigation = useNavigation();
+
+  const [darkModeEnabled, toggleDarkMode ] = React.useState(GetFirestoreSettings.DarkMode)
+  const [notificationsEnabled, toggleNotifications ] = React.useState(GetFirestoreSettings.Notifications)
+  const [negativeReinforcementEnabled, toggleNegativeReinforcement ] = React.useState(GetFirestoreSettings.NegativeReinforcement)
+
+  const SaveSettings = () => {
+    UpdateSettings("Francais", darkModeEnabled, notificationsEnabled, negativeReinforcementEnabled)
+  }
+
+  const SignOut = async () => {
     signOut(auth);
     navigation.replace("Login");
+  };
+
+  const SettingsList = () => {
+    return (
+      <View style={styles.settingsListContainer}>
+        <ToggleItem text={"Dark Mode"} isChecked={darkModeEnabled} setChecked={toggleDarkMode} defaultState={false} disabled={true} />
+        <ToggleItem text={"Notifications"} isChecked={notificationsEnabled} setChecked={toggleNotifications} defaultState={true} disabled={false} />
+        <ToggleItem text={"Negative Reinforcement"} isChecked={negativeReinforcementEnabled} setChecked={toggleNegativeReinforcement} defaultState={false} disabled={false} />
+      </View>
+    );
   };
 
   return (
@@ -33,20 +52,7 @@ const Settings = () => {
   );
 };
 
-const SettingsList = () => {
-  return (
-    <View style={styles.settingsListContainer}>
-      <ToggleItem text={"Dark Mode"} defaultState={false} disabled={true} />
-      <ToggleItem text={"Notifications"} defaultState={true} disabled={false} />
-      <ToggleItem text={"Negative Reinforcement"} defaultState={false} disabled={false} />
-      <ToggleItem
-        text={"Third Setting"}
-        defaultState={false}
-        disabled={false}
-      />
-    </View>
-  );
-};
+
 
 const styles = StyleSheet.create({
   settingsTitle: {
@@ -73,6 +79,27 @@ const styles = StyleSheet.create({
   signOutText: {
     color: "white",
     fontWeight: "bold",
+  },
+  toggleItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 5,
+  },
+  toggleItemCheckbox: {
+    width: 25,
+    height: 25,
+  },
+  toggleItemText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+  toggleItemTextDisabled: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 5,
+    color: "lightgrey",
   },
 });
 
