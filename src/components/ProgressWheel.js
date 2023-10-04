@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const StudyFunc = () => {
   console.log("Studying");
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     borderWidth: 25,
     borderRadius: 110, // Must be exatly half of the width/height to prevent overlapping
     position: "absolute",
-    borderRightColor: 'pink',
+    borderRightColor: 'yellow',
     transform:[{rotateZ: '-45deg'}] // To start at top of circle
   },
   offsetLayer: {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 2,
     borderColor: "black",
-    backgroundColor: "lightgreen",
+    backgroundColor: "#ffff",
   },
   studyButtonText: {
     fontSize: 35,

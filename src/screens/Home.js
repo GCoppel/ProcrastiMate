@@ -36,8 +36,9 @@ const Home = () => {
   return (
     <SafeAreaView style={HomeStyles.container}>
       <View style={HomeStyles.header}>
-        <StreakCounter value={streakNum} />
-        <StudyButton incrementer={IncrementStreak} />
+        {/* <StreakCounter value={streakNum} /> */}
+        <Text style={HomeStyles.headerText}>ProcrastiMate</Text>
+        {/* <StudyButton incrementer={IncrementStreak} /> */}
       </View>
       <Text style={HomeStyles.tasksHeader}>Tasks:</Text>
       <View style={HomeStyles.taskWrapper}>

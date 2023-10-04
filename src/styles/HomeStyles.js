@@ -15,6 +15,10 @@ const HomeStyles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: StatusBar.currentHeight,
   },
+  headerText: {
+    fontSize: 25,
+    fontWeight: '600',
+  },
   progressWidget: {
     alignItems: 'center',
     justifyContent: 'center',
