@@ -9,15 +9,25 @@ import { UpdateSettings, GetSettings } from "../firebase/FirebaseFirestore";
 const Settings = () => {
   async function GetFirestoreSettings() {
     const firestoreSettings = await GetSettings();
-    console.log(firestoreSettings.Language)
-    return firestoreSettings.DarkMode
+    return firestoreSettings
   }
 
   const navigation = useNavigation();
 
-  const [darkModeEnabled, toggleDarkMode ] = React.useState(GetFirestoreSettings.DarkMode)
-  const [notificationsEnabled, toggleNotifications ] = React.useState(GetFirestoreSettings.Notifications)
-  const [negativeReinforcementEnabled, toggleNegativeReinforcement ] = React.useState(GetFirestoreSettings.NegativeReinforcement)
+  const [darkModeEnabled, toggleDarkMode ] =  React.useState(false)
+  const [notificationsEnabled, toggleNotifications ] = React.useState(false)
+  const [negativeReinforcementEnabled, toggleNegativeReinforcement ] = React.useState(false)
+
+  useEffect(() => {
+    GetFirestoreSettings()
+    .then((data) => 
+    {
+      toggleDarkMode(data.DarkMode)
+      toggleNotifications(data.Notifications)
+      toggleNegativeReinforcement(data.NegativeReinforcement)
+    }
+    );
+  }, [])
 
   const SaveSettings = () => {
     UpdateSettings("Francais", darkModeEnabled, notificationsEnabled, negativeReinforcementEnabled)
