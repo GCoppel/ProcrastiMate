@@ -22,7 +22,7 @@ const Navigator = () => {
       <TabBar.Screen
         options={{
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Feather name="home" size={21} />,
+          tabBarIcon: ({ tintColor, size }) => <Feather name="home" size={21} />,
         }}
         name="Home"
         component={Home}
@@ -30,7 +30,7 @@ const Navigator = () => {
       <TabBar.Screen
         options={{
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Feather name="book" size={21} />,
+          tabBarIcon: ({ tintColor, size }) => <Feather name="book" size={21} />,
         }}
         name="Study"
         component={Study}
@@ -38,7 +38,7 @@ const Navigator = () => {
       <TabBar.Screen
         options={{
           headerShown: false,
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ tintColor, size }) => (
             <Feather name="settings" size={21} />
           ),
         }}
