@@ -32,9 +32,6 @@ const Home = () => {
     onNewTaskTextChange("")
     onNewTaskPriorityChange("")
   }
-
-  if (auth.currentUser != null) alert(auth.currentUser.uid);
-  else alert(auth.currentUser)
   
   return (
     <SafeAreaView style={HomeStyles.container}>

@@ -8,9 +8,6 @@ import { auth } from '../firebase/FirebaseInitialize'
 const Login = () => {
   const [userEmail, onChangeUserEmail] = React.useState('');
   const [userPassword, onChangeUserPassword] = React.useState('');
-
-  if (auth.currentUser != null) alert(auth.currentUser.uid);
-
   return (
     <SafeAreaView style={LoginStyles.container}>
       <Image style={LoginStyles.logoImg} source={require('../../assets/Logo_Variants/ProcrastiMate-logos_black.png')} />
