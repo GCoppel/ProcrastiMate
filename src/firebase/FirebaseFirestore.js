@@ -34,7 +34,7 @@ export async function GetSettings() {
   if (docSnap.exists()) {
     settingsData = docSnap.data()
   } else {
-    // docSnap.data() will be undefined in this case
+    settingsData = null
     console.log("No such document!");
   }
   return settingsData;
@@ -53,4 +53,18 @@ export async function AddTaskToFirestore(taskName, taskPriority, counter) {
     { merge: true }
   );
   return;
+}
+
+export async function GetTasks() {
+  const docRef = doc(database, auth.currentUser.uid, "Tasks");
+  const docSnap = await getDoc(docRef)
+  let tasks
+  if (docSnap.exists()){
+    tasks = docSnap.data()
+  }
+  else {
+    tasks = null
+    console.log("No such document!")
+  }
+  return tasks;
 }

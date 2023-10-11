@@ -1,6 +1,10 @@
 import * as firebase from "firebase/app";
-import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
-import { getFirestore } from 'firebase/firestore';
+import {
+  getAuth,
+  initializeAuth,
+  getReactNativePersistence,
+} from "firebase/auth/react-native";
+import { getFirestore } from "firebase/firestore";
 import { ReactNativeAsyncStorage } from "@react-native-async-storage/async-storage";
 
 // Your web app's Firebase configuration
@@ -10,16 +14,15 @@ const firebaseConfig = {
   projectId: "authenticationdemo-ff065",
   storageBucket: "authenticationdemo-ff065.appspot.com",
   messagingSenderId: "700043670996",
-  appId: "1:700043670996:web:99572ca8013e795001d241"
+  appId: "1:700043670996:web:99572ca8013e795001d241",
 };
 
 // Initialize Firebase
 let app;
-if (firebase.getApps.length === 0){
-    app = firebase.initializeApp(firebaseConfig);
-}
-else {
-    app = firebase.getApp();
+if (firebase.getApps.length === 0) {
+  app = firebase.initializeApp(firebaseConfig);
+} else {
+  app = firebase.getApp();
 }
 
 // let auth
@@ -38,13 +41,14 @@ else {
 // }
 
 const auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-  })
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
 
-let database
-try{( database = getFirestore(app))}
-catch(error){
-  console.log(error)
+let database;
+try {
+  database = getFirestore(app);
+} catch (error) {
+  console.log(error);
 }
 
-export { auth, database }
+export { auth, database };
