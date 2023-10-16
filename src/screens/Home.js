@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HomeStyles from "../styles/HomeStyles";
 import TextField from "../components/TextField";
@@ -7,7 +7,7 @@ import StreakCounter from "../components/StreakCounter";
 import AddTaskButton from "../components/AddTaskButton";
 import StudyButton from "../components/StudyButton";
 import { auth, database } from "../firebase/FirebaseInitialize";
-import { AddTaskToFirestore } from '../firebase/FirebaseFirestore'
+import { AddTaskToFirestore, GetTasks } from '../firebase/FirebaseFirestore'
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
 const LISTDATA = [];
@@ -32,6 +32,28 @@ const Home = () => {
     onNewTaskTextChange("")
     onNewTaskPriorityChange("")
   }
+
+  async function GetFireStoreTasks() {
+    const firestoreTasks = await GetTasks();
+    return firestoreTasks
+  }
+
+  useEffect(() => {
+    GetFireStoreTasks()
+      .then((data) => {
+        // Clear the array before populating it, prevents duplicate data in React.StrictMode dev state
+        LISTDATA.length = 0;
+        
+        Object.keys(data).forEach((key) => {
+          let newItem = {
+            taskName: data[key].name,
+            taskPriority: data[key].priority,
+          };
+          LISTDATA.push(newItem);
+        });
+        counter = Object.keys(data).length;
+      });
+  }, []);
   
   return (
     <SafeAreaView style={HomeStyles.container}>

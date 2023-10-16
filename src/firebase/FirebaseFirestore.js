@@ -56,7 +56,7 @@ export async function AddTaskToFirestore(taskName, taskPriority, counter) {
 }
 
 export async function GetTasks() {
-  const docRef = doc(database, auth.currentUser.uid, "Tasks");
+  const docRef = doc(database, auth.currentUser.uid, "Todos");
   const docSnap = await getDoc(docRef)
   let tasks
   if (docSnap.exists()){
