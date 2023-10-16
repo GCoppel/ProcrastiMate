@@ -12,8 +12,6 @@ import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
 const LISTDATA = [];
 
-let counter = 0;
-
 const Home = () => {
   const [newTaskText, onNewTaskTextChange] = React.useState();
   const [newTaskPriority, onNewTaskPriorityChange] = React.useState();
@@ -27,8 +25,7 @@ const Home = () => {
       taskPriority: newTaskPriority,
     };
     LISTDATA.push(newItem)
-    AddTaskToFirestore(newItem.taskName, newItem.taskPriority, counter)
-    counter = counter + 1;
+    AddTaskToFirestore(newItem.taskName, newItem.taskPriority)
     onNewTaskTextChange("")
     onNewTaskPriorityChange("")
   }
@@ -51,7 +48,6 @@ const Home = () => {
           };
           LISTDATA.push(newItem);
         });
-        counter = Object.keys(data).length;
       });
   }, []);
   

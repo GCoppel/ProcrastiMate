@@ -1,6 +1,6 @@
 import React from "react";
 import * as firebase from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { Timestamp, getFirestore } from "firebase/firestore";
 import { auth, database } from "./FirebaseInitialize";
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
@@ -40,8 +40,9 @@ export async function GetSettings() {
   return settingsData;
 }
 
-export async function AddTaskToFirestore(taskName, taskPriority, counter) {
-  const msgID = "msg_" + counter;
+export async function AddTaskToFirestore(taskName, taskPriority) {
+  const msgID = Date.now();
+  //const msgID = taskName.replace(/ /g,"_");
   await setDoc(
     doc(database, auth.currentUser.uid, "Todos"),
     {
