@@ -15,6 +15,15 @@ const Study = () => {
     "What're we working on today?",
   ];
 
+  const negativeReinforcementMessages = [
+    "You can do better.",
+    "Stop being lazy and get to work.",
+    "Get off your a**",
+    "You're still not done?",
+    "I'll be honest, it's pretty pathetic that you're not done yet.",
+    "Your dad thinks you're a failure. Go on, prove him wrong.",
+  ];
+
   let motivationalMessage =
     motivationalMessages[
       Math.floor(Math.random() * motivationalMessages.length)
