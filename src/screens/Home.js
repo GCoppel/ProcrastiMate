@@ -23,6 +23,9 @@ const Home = () => {
     let newItem = {
       taskName: newTaskText,
       taskPriority: newTaskPriority,
+      taskDeadline: null,
+      taskGroup: null,
+      taskLocation: null
     };
     LISTDATA.push(newItem)
     AddTaskToFirestore(newItem.taskName, newItem.taskPriority)
@@ -50,6 +53,8 @@ const Home = () => {
         });
       });
   }, []);
+
+  const [taskEnabled, toggleTaskEnabled ] =  React.useState(false)
   
   return (
     <SafeAreaView style={HomeStyles.container}>

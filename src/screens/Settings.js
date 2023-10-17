@@ -41,9 +41,9 @@ const Settings = () => {
   const SettingsList = () => {
     return (
       <View style={styles.settingsListContainer}>
-        <ToggleItem text={"Dark Mode"} isChecked={darkModeEnabled} setChecked={toggleDarkMode} defaultState={false} disabled={true} />
-        <ToggleItem text={"Notifications"} isChecked={notificationsEnabled} setChecked={toggleNotifications} defaultState={true} disabled={false} />
-        <ToggleItem text={"Negative Reinforcement"} isChecked={negativeReinforcementEnabled} setChecked={toggleNegativeReinforcement} defaultState={false} disabled={false} />
+        <ToggleItem text={"Dark Mode"} type={"square"} isChecked={darkModeEnabled} setChecked={toggleDarkMode} disabled={true} />
+        <ToggleItem text={"Notifications"} type={"square"} isChecked={notificationsEnabled} setChecked={toggleNotifications} disabled={false} />
+        <ToggleItem text={"Negative Reinforcement"} type={"square"} isChecked={negativeReinforcementEnabled} setChecked={toggleNegativeReinforcement} disabled={false} />
       </View>
     );
   };

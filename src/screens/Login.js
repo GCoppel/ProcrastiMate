@@ -6,8 +6,8 @@ import { LoginButton, RegisterButton } from "../components/Buttons";
 import { auth } from '../firebase/FirebaseInitialize'
 
 const Login = () => {
-  const [userEmail, onChangeUserEmail] = React.useState('');
-  const [userPassword, onChangeUserPassword] = React.useState('');
+  const [userEmail, onChangeUserEmail] = React.useState('admin@test.com');
+  const [userPassword, onChangeUserPassword] = React.useState('password');
   return (
     <SafeAreaView style={LoginStyles.container}>
       <Image style={LoginStyles.logoImg} source={require('../../assets/Logo_Variants/ProcrastiMate-logos_black.png')} />

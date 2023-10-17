@@ -3,11 +3,11 @@ import { View, Text, StyleSheet } from "react-native";
 import Checkbox from "expo-checkbox";
 
 const ToggleItem = (props) => {
-  const { text, isChecked, setChecked, defaultState, disabled } = props;
+  const { text, type, isChecked, setChecked, disabled } = props;
   return (
     <View style={styles.toggleItemContainer}>
       <Checkbox
-        style={styles.toggleItemCheckbox}
+        style={ type=="square" ? styles.squareCheckbox : styles.circleCheckbox}
         value={isChecked}
         disabled={disabled}
         onValueChange={setChecked}
@@ -31,9 +31,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginVertical: 5,
   },
-  toggleItemCheckbox: {
+  squareCheckbox: {
     width: 25,
     height: 25,
+  },
+  circleCheckbox: {
+    width: 25,
+    height: 25,
+    borderRadius: 100,
   },
   toggleItemText: {
     fontSize: 20,

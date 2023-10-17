@@ -42,7 +42,6 @@ export async function GetSettings() {
 
 export async function AddTaskToFirestore(taskName, taskPriority) {
   const msgID = Date.now();
-  //const msgID = taskName.replace(/ /g,"_");
   await setDoc(
     doc(database, auth.currentUser.uid, "Todos"),
     {

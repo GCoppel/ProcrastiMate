@@ -57,6 +57,7 @@ const HomeStyles = StyleSheet.create({
     paddingTop: 5,
   },
   taskItem: {
+    flexDirection: "row",
     marginVertical: 10,
     borderWidth: 1,
     borderColor: 'black',
