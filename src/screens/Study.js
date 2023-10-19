@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Easing } from "react-native";
 
 import ProgressWheel from "../components/ProgressWheel";
 
-const Study = () => {
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
+const Study = () => {
   const motivationalMessages = [
     "You're doing great, sweetie!",
     "Keep up the good work!",
@@ -32,7 +33,19 @@ const Study = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.motivationalMessageText}>{motivationalMessage}</Text>
-      <ProgressWheel percent={25}/>
+      <AnimatedCircularProgress
+        size={240}
+        width={26}
+        fill={100}
+        tintColor={"#550000"}
+        tintColorSecondary={"#009900"}
+        duration={3000}
+        easing={Easing.inOut(Easing.ease)}
+        onAnimationComplete={() => console.log("onAnimationComplete")}
+        backgroundColor="#999999"
+      >
+        {(fill) => <Text>{fill.toFixed(0)}</Text>}
+      </AnimatedCircularProgress>
     </View>
   );
 };
@@ -50,7 +63,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   studyButton: {
-    marginTop: 20,
+    marginTop: 50,
     width: 150,
     height: 150,
     justifyContent: "center",
