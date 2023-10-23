@@ -7,9 +7,9 @@ const HomeStyles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row",
     width: "100%",
     height: "12%",
     borderBottomWidth: 1,
@@ -17,15 +17,15 @@ const HomeStyles = StyleSheet.create({
   },
   headerText: {
     fontSize: 25,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   progressWidget: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
   },
   streakWrapper: {
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
@@ -33,10 +33,10 @@ const HomeStyles = StyleSheet.create({
   },
   streakCounter: {
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   streakSubText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   taskWrapper: {
     alignItems: "center",
@@ -60,10 +60,10 @@ const HomeStyles = StyleSheet.create({
     flexDirection: "row",
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: "black",
     borderRadius: 10,
     paddingVertical: 5,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   tasksHeader: {
     alignSelf: "center",
@@ -75,31 +75,38 @@ const HomeStyles = StyleSheet.create({
   taskList: {
     marginHorizontal: 20,
   },
-  body: {
-    
-  },
+  body: {},
   emptyTaskList: {
     alignSelf: "center",
     marginTop: 50,
   },
   btnNormal: {
-    color: 'black'
+    color: "black",
   },
   btnPress: {
-    color: 'white',
+    color: "white",
   },
   btnText: {
-    color: 'black',
-    paddingVertical: 2,
-    paddingHorizontal: 5,
-    borderWidth: 2,
-    borderRadius: 5
+    color: "black",
+    fontSize: 24,
+    fontWeight: 'bold'
   },
   studyButtonWrapper: {
     borderRadius: 5,
-    alignContent: 'center',
-    justifyContent: 'center',
-  }
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  studyButton: {
+    width: 150,
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: "black",
+    backgroundColor: "lightgrey",
+  },
 });
 
 export default HomeStyles;

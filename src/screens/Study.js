@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Easing } from "react-native";
-
-import ProgressWheel from "../components/ProgressWheel";
-
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import StudyButton from '../components/StudyButton'
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const Study = () => {
@@ -12,7 +11,7 @@ const Study = () => {
     "Proud of you, son.",
     "What're you studying?",
     "It's a good day for studying.",
-    "Welcome back!",
+    "Lookin' good!",
     "What're we working on today?",
   ];
 
@@ -30,22 +29,45 @@ const Study = () => {
       Math.floor(Math.random() * motivationalMessages.length)
     ];
 
+  const [animComplete, setAnimComplete] = useState(false);
+  const [fillPercent, setFill] = useState(50);
+
+  // Use an effect to listen for changes in animComplete
+  useEffect(() => {
+    // Just using this to call a redraw on the Text and AnimatedCircularProgress components
+  }, [animComplete]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.motivationalMessageText}>{motivationalMessage}</Text>
       <AnimatedCircularProgress
         size={240}
         width={26}
-        fill={100}
+        rotation={-115}
+        lineCap="round"
+        arcSweepAngle={230}
+        fill={40} // Use the fill state
         tintColor={"#550000"}
         tintColorSecondary={"#009900"}
         duration={3000}
         easing={Easing.inOut(Easing.ease)}
-        onAnimationComplete={() => console.log("onAnimationComplete")}
+        onAnimationComplete={() => setAnimComplete(true)}
         backgroundColor="#999999"
       >
-        {(fill) => <Text>{fill.toFixed(0)}</Text>}
+        {(fill) =>
+          animComplete ? (
+            <StudyButton />
+          ) : (
+            <Animated.View
+            key={"uniqueKey"}
+            entering={FadeIn.duration(500)}
+            exiting={FadeOut.duration(100)}
+          >
+            <Text style={styles.progressText}>{fill.toFixed(0)}</Text>
+          </Animated.View>
+          )
+        }
       </AnimatedCircularProgress>
+      <Text style={styles.motivationalMessageText}>{animComplete? motivationalMessage : "Let's see how you've been doing..."}</Text>
     </View>
   );
 };
@@ -61,6 +83,10 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     width: "75%",
     textAlign: "center",
+  },
+  progressText: {
+    fontSize: 27,
+    fontWeight: 'bold'
   },
   studyButton: {
     marginTop: 50,
