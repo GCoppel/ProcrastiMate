@@ -5,6 +5,7 @@ import StudyButton from '../components/StudyButton'
 import StudyProgress from '../components/StudyProgress'
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { GetStudySessions } from "../firebase/FirebaseFirestore";
+import { useNavigation } from "@react-navigation/core";
 
 const Study = () => {
   const motivationalMessages = [
@@ -71,6 +72,12 @@ const Study = () => {
       });
   }, []);
 
+  const navigation = useNavigation()
+
+  const navigateToSessionPage = () =>{
+    navigation.replace("Session")
+  }
+
   return (
     <View style={styles.container}>
       {/* <StudyProgress></StudyProgress> */}
@@ -95,7 +102,7 @@ const Study = () => {
       >
         {(fill) =>
           animComplete ? (
-            <StudyButton/>
+            <StudyButton openSessionPage={navigateToSessionPage} />
           ) : (
             <Animated.View
             key={"uniqueKey"}

@@ -6,6 +6,7 @@ import Navigator from "./src/Navigator";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Session from "./src/screens/Session";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,10 @@ export default function App() {
           name="Navigator"
           component={Navigator}
         />
+        <Stack.Screen 
+        options={{headerShown: false}}
+        name="Session"
+        component={Session}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

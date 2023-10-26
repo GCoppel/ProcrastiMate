@@ -13,8 +13,9 @@ import Animated, { FadeIn, FadeOut, withDelay } from "react-native-reanimated";
 const StudyButton = (props) => {
   function onStudyButtonPress() {
     //props.incrementer()
-    console.log("study button pressed");
-    AddStudySession(10, "SUPER")
+    //console.log("study button pressed");
+    //AddStudySession(10, "SUPER")
+    props.openSessionPage();
   }
   var touchProps = {
     activeOpacity: 1,

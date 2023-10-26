@@ -5,6 +5,7 @@ import { Entypo, Feather } from "@expo/vector-icons";
 import Home from "./screens/Home";
 import Settings from "./screens/Settings";
 import Study from "./screens/Study";
+import Session from "./screens/Session";
 
 const Navigator = () => {
   const TabBar = createBottomTabNavigator();
@@ -13,7 +14,7 @@ const Navigator = () => {
       screenOptions={{
         tabBarActiveTintColor: "black",
         tabBarHideOnKeyboard: true,
-        tabBarLabelPosition: 'below-icon',
+        tabBarLabelPosition: "below-icon",
         tabBarItemStyle: { paddingVertical: 5 },
         tabBarLabelStyle: { fontWeight: "bold", fontSize: 12 },
         tabBarStyle: { height: "7%" },
@@ -22,7 +23,9 @@ const Navigator = () => {
       <TabBar.Screen
         options={{
           headerShown: false,
-          tabBarIcon: ({ tintColor, size }) => <Feather name="home" size={21} />,
+          tabBarIcon: ({ tintColor, size }) => (
+            <Feather name="home" size={21} />
+          ),
         }}
         name="Home"
         component={Home}
@@ -30,7 +33,9 @@ const Navigator = () => {
       <TabBar.Screen
         options={{
           headerShown: false,
-          tabBarIcon: ({ tintColor, size }) => <Feather name="book" size={21} />,
+          tabBarIcon: ({ tintColor, size }) => (
+            <Feather name="book" size={21} />
+          ),
         }}
         name="Study"
         component={Study}
