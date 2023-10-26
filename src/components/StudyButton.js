@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, TouchableHighlight } from "react-native";
-
+import { AddStudySession } from "../firebase/FirebaseFirestore";
 import HomeStyles from "../styles/HomeStyles";
 import Animated, { FadeIn, FadeOut, withDelay } from "react-native-reanimated";
 
@@ -14,6 +14,7 @@ const StudyButton = (props) => {
   function onStudyButtonPress() {
     //props.incrementer()
     console.log("study button pressed");
+    AddStudySession(10, "SUPER")
   }
   var touchProps = {
     activeOpacity: 1,

@@ -46,6 +46,7 @@ export async function AddTaskToFirestore(taskName, taskPriority) {
     doc(database, auth.currentUser.uid, "Todos"),
     {
       [msgID]: {
+        id: msgID,
         name: taskName,
         priority: taskPriority,
       },
@@ -67,4 +68,33 @@ export async function GetTasks() {
     console.log("No such document!")
   }
   return tasks;
+}
+
+export async function AddStudySession(minutes, subject){
+  const msgID = Date.now();
+  await setDoc(
+    doc(database, auth.currentUser.uid, "Sessions"),
+    {
+      [msgID]: {
+        timestamp: msgID,
+        sessionLength: minutes,
+        subjectName: subject, 
+      },
+    },
+    { merge: true }
+  )
+}
+
+export async function GetStudySessions() {
+  const docRef = doc(database, auth.currentUser.uid, "Sessions");
+  const docSnap = await getDoc(docRef)
+  let sessions
+  if (docSnap.exists()){
+    sessions = docSnap.data()
+  }
+  else {
+    sessions = null
+    console.log("No such document!")
+  }
+  return sessions;
 }

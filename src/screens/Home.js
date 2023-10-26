@@ -41,6 +41,7 @@ const Home = () => {
   useEffect(() => {
     GetFireStoreTasks()
       .then((data) => {
+        if (!data){return} // If user has no Tasks document, do nothing
         // Clear the array before populating it, prevents duplicate data in React.StrictMode dev state
         LISTDATA.length = 0;
         
