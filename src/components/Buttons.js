@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, Pressable } from "react-native";
+import { Text, Pressable, Alert } from "react-native";
 import LoginStyles from "../styles/LoginStyles";
 import { useNavigation } from "@react-navigation/core";
 import { auth } from "../firebase/FirebaseInitialize";
@@ -26,9 +26,9 @@ const LoginButton = (props) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        alert("Successfully logged in with: " + user.email);
+        Alert.alert("Login Successful","Logged in with: " + user.email);
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => Alert.alert("Error Logging In", error.message));
   };
 
   return (

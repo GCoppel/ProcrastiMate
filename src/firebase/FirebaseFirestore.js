@@ -72,6 +72,7 @@ export async function GetTasks() {
 
 export async function AddStudySession(minutes, subject){
   const msgID = Date.now();
+  if (subject ==null) {subject = "NONE"}
   await setDoc(
     doc(database, auth.currentUser.uid, "Sessions"),
     {
