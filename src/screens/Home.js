@@ -72,12 +72,14 @@ const Home = () => {
             entryType={'default'}
             text={newTaskText}
             onChangeText={onNewTaskTextChange}
+            characterLimit={25}
           />
           <TextField
             type={"Priority (Optional)"}
             entryType={'number-pad'}
             text={newTaskPriority}
             onChangeText={onNewTaskPriorityChange}
+            characterLimit={1}
           />
         </View>
         <AddTaskButton onPressFunc={AddTask} taskData={LISTDATA} />

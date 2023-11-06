@@ -17,13 +17,15 @@ export async function UpdateSettings(
   language,
   darkMode,
   notifications,
-  negativeReinforcement
+  negativeReinforcement,
+  weeklyStudyGoal,
 ) {
   await setDoc(doc(database, auth.currentUser.uid, "Settings"), {
     Language: language,
     DarkMode: darkMode,
     Notifications: notifications,
     NegativeReinforcement: negativeReinforcement,
+    WeeklyStudyGoal: weeklyStudyGoal
   });
 }
 

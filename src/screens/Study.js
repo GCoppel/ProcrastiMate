@@ -4,7 +4,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import StudyButton from '../components/StudyButton'
 import StudyProgress from '../components/StudyProgress'
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { GetStudySessions } from "../firebase/FirebaseFirestore";
+import { GetSettings, GetStudySessions } from "../firebase/FirebaseFirestore";
 import { useNavigation } from "@react-navigation/core";
 
 const Study = () => {
@@ -42,11 +42,19 @@ const Study = () => {
     const firestoreSessions = await GetStudySessions();
     return firestoreSessions
   }
+
+  async function GetFirestoreSettings() {
+    const firestoreSettings = await GetSettings();
+    return firestoreSettings;
+  }
   
   const [streak, setStreak] = useState(0)
   const [weeklyHours, setWeeklyHours] = useState(0)
   const [weeklyMinutes, setWeeklyMinutes] = useState(0)
   const [weeklySessions, setWeeklySessions] = useState(0)
+  const [weeklyGoalHours, setWeeklyGoalHours] = useState(0)
+  const [weeklyGoalMinutes, setWeeklyGoalMinutes] = useState(0)
+  const [fillAmount, setFillAmount] = useState(0)
 
   useEffect(() => {
     GetFirestoreStudySessions()
@@ -72,6 +80,21 @@ const Study = () => {
       });
   }, []);
 
+  useEffect(() => {
+    GetFirestoreSettings().then((data) => {
+      let completedPercent = ((weeklyMinutes + (weeklyHours*60)) / (data.WeeklyStudyGoal))*100
+      setFillAmount(completedPercent);      
+      let goalHours = 0;
+      let goalMinutes = data.WeeklyStudyGoal;
+      while (goalMinutes >= 60){
+        goalMinutes -= 60;
+        goalHours++;
+      }
+      setWeeklyGoalHours(goalHours);
+      setWeeklyGoalMinutes(goalMinutes);
+    });
+  }, [weeklyMinutes, weeklyHours])
+
   const navigation = useNavigation()
 
   const navigateToSessionPage = () =>{
@@ -83,7 +106,8 @@ const Study = () => {
       {/* <StudyProgress></StudyProgress> */}
       <View style={styles.progressContainer}>
             <Text style={styles.progressInfo}>Study Streak: {streak}</Text>
-            <Text style={styles.progressInfo}>This Week: {(weeklyHours==0)? "": weeklyHours +" Hrs "}{weeklyMinutes} Min</Text>
+            <Text style={styles.progressInfo}>Your Weekly Goal: {(weeklyGoalHours==0)? "": weeklyGoalHours +" Hrs "}{weeklyGoalMinutes} Min</Text>
+            <Text style={styles.progressInfo}>This Week: {(weeklyHours==0)? "": weeklyHours +" Hrs "}{weeklyMinutes} Min - {fillAmount.toPrecision(3)}%</Text>
             <Text style={styles.progressInfo}>Throughout {weeklySessions} Sessions</Text>
         </View>
       <AnimatedCircularProgress
@@ -92,7 +116,7 @@ const Study = () => {
         rotation={-115}
         lineCap="round"
         arcSweepAngle={230}
-        fill={100} // Use the fill state
+        fill={fillAmount} // Use the fill state
         tintColor={"#550000"}
         tintColorSecondary={"#009900"}
         duration={3000}
@@ -129,6 +153,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: '12%',
+    marginBottom: 25,
   },
   progressInfo: {
     fontSize: 20,

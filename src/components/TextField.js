@@ -4,7 +4,7 @@ import { View, Text, TextInput } from "react-native";
 import LoginStyles from "../styles/LoginStyles";
 
 const TextField = (props) => {
-  const { text, onChangeText, type, entryType } = props;
+  const { text, onChangeText, type, entryType, characterLimit } = props;
   return (
     <View>
       <TextInput
@@ -14,7 +14,7 @@ const TextField = (props) => {
         placeholder={type}
         value={text}
         secureTextEntry={type=="password"? true : false}
-        maxLength={entryType=="number-pad"? 1 : 25}
+        maxLength={characterLimit}
       />
     </View>
   );
