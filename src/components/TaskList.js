@@ -12,7 +12,7 @@ const TaskList = (props) => {
         style={HomeStyles.taskList}
         data={props.data}
         renderItem={Task}
-        ListEmptyComponent={<Empty />}
+        ListEmptyComponent={<Empty colorTheme={props.colorTheme}/>}
         keyExtractor={(item) => item.taskName}
         extraData={props.addTaskFunc}
       />
@@ -20,8 +20,8 @@ const TaskList = (props) => {
   );
 };
 
-const Empty = () => {
-  return <Text style={HomeStyles.emptyTaskList}>You don't have any tasks right now!</Text>;
+const Empty = (props) => {
+  return <Text style={[HomeStyles.emptyTaskList, {color: props.colorTheme}]}>You don't have any tasks right now!</Text>;
 };
 
 export default TaskList;

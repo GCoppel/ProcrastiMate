@@ -26,7 +26,7 @@ const LoginButton = (props) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        Alert.alert("Login Successful","Logged in with: " + user.email);
+        //Alert.alert("Login Successful","Logged in with: " + user.email);
       })
       .catch((error) => Alert.alert("Error Logging In", error.message));
   };

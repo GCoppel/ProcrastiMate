@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Easing } from "react-native";
+import { View, Text, useColorScheme, StyleSheet, Easing } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import StudyButton from '../components/StudyButton'
 import StudyProgress from '../components/StudyProgress'
@@ -25,6 +25,10 @@ const Study = () => {
     "I'll be honest, it's pretty pathetic that you're not done yet.",
     "Your dad thinks you're a failure. Go on, prove him wrong.",
   ];
+
+  const theme = useColorScheme();
+  const darkColor = "#222227";
+  const [isDarkMode, setIsDarkMode] = React.useState(theme === 'dark');
   
   let motivationalMessage =
     motivationalMessages[
@@ -102,13 +106,13 @@ const Study = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode? {backgroundColor: darkColor}: {backgroundColor: 'white'}]}>
       {/* <StudyProgress></StudyProgress> */}
       <View style={styles.progressContainer}>
-            <Text style={styles.progressInfo}>Study Streak: {streak}</Text>
-            <Text style={styles.progressInfo}>Your Weekly Goal: {(weeklyGoalHours==0)? "": weeklyGoalHours +" Hrs "}{weeklyGoalMinutes} Min</Text>
-            <Text style={styles.progressInfo}>This Week: {(weeklyHours==0)? "": weeklyHours +" Hrs "}{weeklyMinutes} Min - {fillAmount.toPrecision(3)}%</Text>
-            <Text style={styles.progressInfo}>Throughout {weeklySessions} Sessions</Text>
+            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>Study Streak: {streak}</Text>
+            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>Your Weekly Goal: {(weeklyGoalHours==0)? "": weeklyGoalHours +" Hrs "}{weeklyGoalMinutes} Min</Text>
+            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>This Week: {(weeklyHours==0)? "": weeklyHours +" Hrs "}{weeklyMinutes} Min - {fillAmount.toPrecision(3)}%</Text>
+            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>Throughout {weeklySessions} Sessions</Text>
         </View>
       <AnimatedCircularProgress
         size={240}
@@ -122,7 +126,7 @@ const Study = () => {
         duration={3000}
         easing={Easing.inOut(Easing.ease)}
         onAnimationComplete={() => setAnimComplete(true)}
-        backgroundColor="#999999"
+        backgroundColor={"#999999"}
       >
         {(fill) =>
           animComplete ? (
@@ -133,12 +137,12 @@ const Study = () => {
             entering={FadeIn.duration(500)}
             exiting={FadeOut.duration(100)}
           >
-            <Text style={styles.progressText}>{fill.toFixed(0)}</Text>
+            <Text style={[styles.progressText, isDarkMode? {color: 'white'}:{color:darkColor}]}>{fill.toFixed(0)}</Text>
           </Animated.View>
           )
         }
       </AnimatedCircularProgress>
-      <Text style={styles.motivationalMessageText}>{animComplete? motivationalMessage : "Let's see how you've been doing..."}</Text>
+      <Text style={[styles.motivationalMessageText, isDarkMode? {color: 'white'}:{color:darkColor}]}>{animComplete? motivationalMessage : "Let's see how you've been doing..."}</Text>
     </View>
   );
 };

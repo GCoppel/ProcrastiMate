@@ -3,20 +3,20 @@ import { View, Text, StyleSheet } from "react-native";
 import Checkbox from "expo-checkbox";
 
 const ToggleItem = (props) => {
-  const { text, type, isChecked, setChecked, disabled } = props;
+  const { colorTheme, enabledTextColor, disabledTextColor, text, type, isChecked, setChecked, disabled } = props;
   return (
     <View style={styles.toggleItemContainer}>
       <Checkbox
-        style={ type=="square" ? styles.squareCheckbox : styles.circleCheckbox}
+        style={[type=="square" ? styles.squareCheckbox : styles.circleCheckbox, disabled? {borderColor: disabledTextColor}:{borderColor: enabledTextColor}]}
         value={isChecked}
-        disabled={disabled}
-        onValueChange={setChecked}
-        color={isChecked ? "#000" : undefined}
+        disabled={false} // Never actually disabled due to limited border color accessibility. Instead set disabled functionality in onValueChanged logic
+        onValueChange={disabled? null: setChecked}
+        color={isChecked ? (colorTheme) : undefined}
       />
       <Text
-        style={
-          !disabled ? styles.toggleItemText : styles.toggleItemTextDisabled
-        }
+        style={[
+          !disabled ? ([styles.toggleItemText, {color: enabledTextColor}]) : ([styles.toggleItemTextDisabled, {color: disabledTextColor}])
+        ]}
       >
         {text}
       </Text>

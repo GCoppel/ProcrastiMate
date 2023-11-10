@@ -1,5 +1,6 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native";
+//import { StatusBar } from "expo-status-bar";
+import { StyleSheet, StatusBar, useColorScheme } from "react-native";
+import React from 'react'
 
 import Login from "./src/screens/Login";
 import Navigator from "./src/Navigator";
@@ -11,25 +12,30 @@ import Session from "./src/screens/Session";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const theme = useColorScheme();
+  StatusBar.setBarStyle(theme === "light" ? 'light-content':'dark-content')
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={Login}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Navigator"
-          component={Navigator}
-        />
-        <Stack.Screen 
-        options={{headerShown: false}}
-        name="Session"
-        component={Session}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={Login}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Navigator"
+            component={Navigator}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Session"
+            component={Session}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 

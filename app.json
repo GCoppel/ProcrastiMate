@@ -9,7 +9,12 @@
     "splash": {
       "image": "./assets/Logo_Variants/ProcrastiMate-logos_black.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "dark": {
+        "image": "./assets/Logo_Variants/ProcrastiMate-logos_white.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#242424"
+   }
     },
     "assetBundlePatterns": [
       "**/*"

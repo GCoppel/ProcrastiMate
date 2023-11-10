@@ -12,6 +12,7 @@ const TextField = (props) => {
         keyboardType={entryType? entryType : 'default'}
         onChangeText={(text) => {onChangeText(text)}}
         placeholder={type}
+        placeholderTextColor={"grey"}
         value={text}
         secureTextEntry={type=="password"? true : false}
         maxLength={characterLimit}
