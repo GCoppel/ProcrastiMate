@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { SafeAreaView, View, Text, StatusBar } from "react-native";
+import { SafeAreaView, View, Text, useColorScheme } from "react-native";
 import HomeStyles from "../styles/HomeStyles";
 import TextField from "../components/TextField";
 import TaskList from "../components/TaskList";
@@ -56,12 +56,15 @@ const Home = () => {
   }, []);
 
   const [taskEnabled, toggleTaskEnabled ] =  React.useState(false)
+
+  const theme = useColorScheme();
+  const [isDarkMode, setIsDarkMode] = React.useState(theme === 'dark');
   
   return (
     <SafeAreaView style={HomeStyles.container}>
       <View style={HomeStyles.header}>
         {/* <StreakCounter value={streakNum} /> */}
-        <Text style={HomeStyles.headerText}>ProcrastiMate</Text>
+        <Text style={[HomeStyles.headerText, isDarkMode? {color: 'red'} : {color: 'blue'}]}>ProcrastiMate</Text>
         {/* <StudyButton incrementer={IncrementStreak} /> */}
       </View>
       <Text style={HomeStyles.tasksHeader}>Tasks:</Text>

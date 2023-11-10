@@ -11,7 +11,7 @@ import {
 import { SetDefaultSettings } from "../firebase/FirebaseFirestore";
 
 const LoginButton = (props) => {
-  const { email, password } = props;
+  const { colorTheme, textColor, email, password } = props;
   const navigation = useNavigation();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,16 +33,16 @@ const LoginButton = (props) => {
 
   return (
     <Pressable
-      style={[LoginStyles.button, LoginStyles.loginButton]}
+      style={[LoginStyles.button, LoginStyles.loginButton, {backgroundColor:colorTheme, borderColor: colorTheme}]}
       onPress={handleLogin}
     >
-      <Text style={LoginStyles.buttonTextWhite}>Login</Text>
+      <Text style={[LoginStyles.buttonTextWhite, {color:textColor}]}>Login</Text>
     </Pressable>
   );
 };
 
 const RegisterButton = (props) => {
-  const { email, password } = props;
+  const { colorTheme, textColor, email, password } = props;
   const navigation = useNavigation();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -64,10 +64,10 @@ const RegisterButton = (props) => {
   };
   return (
     <Pressable
-      style={[LoginStyles.button, LoginStyles.registerButton]}
+      style={[LoginStyles.button, LoginStyles.registerButton, {backgroundColor: colorTheme, borderColor: textColor}]}
       onPress={handleSignUp}
     >
-      <Text style={LoginStyles.buttonTextBlack}>Register</Text>
+      <Text style={[LoginStyles.buttonTextBlack, {color:textColor}]}>Register</Text>
     </Pressable>
   );
 };

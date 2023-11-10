@@ -53,14 +53,14 @@ const Settings = () => {
             type={"square"}
             isChecked={darkModeEnabled}
             setChecked={toggleDarkMode}
-            disabled={true}
+            disabled={false}
           />
           <ToggleItem
             text={"Notifications"}
             type={"square"}
             isChecked={notificationsEnabled}
             setChecked={toggleNotifications}
-            disabled={false}
+            disabled={true}
           />
           <ToggleItem
             text={"Negative Reinforcement"}
@@ -77,6 +77,7 @@ const Settings = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.settingsTitle}>Settings</Text>
+      <Text style={styles.settingsWarning}>Note: All settings changes require app restart!</Text>
       <SettingsList />
       <View style={styles.textbox}>
           <Text style={styles.studyGoalText}>Weekly Study Goal:</Text>
@@ -109,6 +110,11 @@ const styles = StyleSheet.create({
   settingsTitle: {
     fontSize: 30,
     fontWeight: "bold",
+    marginBottom: 5,
+  },
+  settingsWarning: {
+    fontSize: 14,
+    fontStyle: 'italic',
     marginBottom: 15,
   },
   container: {
