@@ -6,12 +6,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
+  useColorScheme,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import TextField from "../components/TextField";
 import { AddStudySession } from "../firebase/FirebaseFirestore";
 
 const Session = () => {
+  const theme = useColorScheme();
+  const darkColor = "#222227";
+  const [isDarkMode, setIsDarkMode] = React.useState(theme === "dark");
+
   const [userEmail, onChangeUserEmail] = React.useState("admin@test.com");
   const [userPassword, onChangeUserPassword] = React.useState("password");
   navigation = useNavigation();
@@ -68,7 +73,8 @@ const Session = () => {
   const onEndConfirm = () => {
     let totalTime = minutes + (seconds >= 30 ? 1 : 0); // Set the session length in minutes
     if (totalTime >= 1) {
-      let sessionSubj = ((sessionSubject == "")? "NONE" : (sessionSubject.toUpperCase()))
+      let sessionSubj =
+        sessionSubject == "" ? "NONE" : sessionSubject.toUpperCase();
       AddStudySession(totalTime, sessionSubj);
     }
     navigation.replace("Navigator");
@@ -80,13 +86,13 @@ const Session = () => {
   const cancelEndSession = () => {
     setModalVisible(false);
     setSessionSubject("");
-  }
+  };
 
   const [modalVisible, setModalVisible] = useState(false);
   const [sessionSubject, setSessionSubject] = useState("");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: (isDarkMode? darkColor:'white')}]}>
       <Modal
         animationType="slide"
         visible={modalVisible}
@@ -96,19 +102,35 @@ const Session = () => {
         }}
       >
         <View style={styles.modalContentContainer}>
-          <View style={styles.modalVisiblePanel}>
-            <Text style={styles.timeText}>
-              {seconds >= 30
-                ? (minutes+1) + (minutes == 1 ? " Minute " : " Minutes ") // Rounded up
-                : minutes + (minutes == 1 ? " Minute " : " Minutes ") // Rounded Down
+          <View
+            style={[
+              styles.modalVisiblePanel,
+              { backgroundColor: isDarkMode ? '#121212' : "white" },
+            ]}
+          >
+            <Text
+              style={[
+                styles.timeText,
+                { color: isDarkMode ? "white" : darkColor },
+              ]}
+            >
+              {
+                seconds >= 30
+                  ? minutes + 1 + (minutes == 1 ? " Minute " : " Minutes ") // Rounded up
+                  : minutes + (minutes == 1 ? " Minute " : " Minutes ") // Rounded Down
               }
             </Text>
-            <TextField text={sessionSubject} onChangeText={setSessionSubject} type={"Session Subject (Optional)"}/>
-            <TouchableOpacity 
-            style={styles.endSessionConfirmButton}
-            onPress={() => onEndConfirm()}
+            <TextField
+              colorTheme={isDarkMode ? "white" : darkColor}
+              text={sessionSubject}
+              onChangeText={setSessionSubject}
+              type={"Session Subject (Optional)"}
+            />
+            <TouchableOpacity
+              style={[styles.endSessionConfirmButton, {backgroundColor: (isDarkMode? 'white':darkColor)}]}
+              onPress={() => onEndConfirm()}
             >
-              <Text style={styles.modalButtonText}>End Session</Text>
+              <Text style={[styles.modalButtonText, {color: isDarkMode ? darkColor : 'white' }]}>End Session</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.endSessionCancelButton}
@@ -120,7 +142,7 @@ const Session = () => {
         </View>
       </Modal>
       <View style={styles.timerContainer}>
-        <Text style={styles.timeText}>
+        <Text style={[styles.timeText, { color: isDarkMode ? "white" : darkColor },]}>
           {minutes == 0 ? "" : minutes + (minutes == 1 ? " Min " : " Mins ")}
           {seconds} Sec
         </Text>
@@ -132,13 +154,13 @@ const Session = () => {
               style={[styles.button, styles.pauseButton]}
               onPress={pauseTimer}
             >
-              <Text style={styles.buttonText}>Pause</Text>
+              <Text style={[styles.buttonText, {color: '#9999ff'}]}>Pause</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.resetButton]}
               onPress={resetTimer}
             >
-              <Text style={styles.buttonText}>Cancel</Text>
+              <Text style={[styles.buttonText, {color: '#ff0000'}]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -150,7 +172,7 @@ const Session = () => {
                   style={[styles.button, styles.resumeButton]}
                   onPress={resumeTimer}
                 >
-                  <Text style={styles.buttonText}>Resume</Text>
+                  <Text style={[styles.buttonText, {color: '#33ff33'}]}>Resume</Text>
                 </TouchableOpacity>
               ) : (
                 // If time is 0, we want the start button
@@ -159,7 +181,7 @@ const Session = () => {
                     style={[styles.button, styles.startButton]}
                     onPress={startTimer}
                   >
-                    <Text style={styles.buttonText}>Start</Text>
+                    <Text style={[styles.buttonText, {color: '#33ff33'}]}>Start</Text>
                   </TouchableOpacity>
                 </>
               )
@@ -167,8 +189,8 @@ const Session = () => {
           </View>
         )}
       </View>
-      <TouchableOpacity style={styles.endSessionButton} onPress={onEndPress}>
-        <Text style={styles.endSessionButtonText}>End Session</Text>
+      <TouchableOpacity style={[styles.endSessionButton, { borderColor: isDarkMode ? "white" : darkColor },]} onPress={onEndPress}>
+        <Text style={[styles.endSessionButtonText, { color: isDarkMode ? "white" : darkColor },]}>End Session</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -264,17 +286,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   startButton: {
-    backgroundColor: "green",
+    borderColor: "green",
+    borderWidth: 7,
     borderRadius: 100,
   },
   resetButton: {
-    backgroundColor: "#e74c3c",
+    borderColor: "#af0000",
+    borderWidth: 7,
   },
   pauseButton: {
-    backgroundColor: "#f39c12",
+    borderColor: "#7777ff",
+    borderWidth: 7,
   },
   resumeButton: {
-    backgroundColor: "#3498db",
+    borderColor: "green",
+    borderWidth: 7,
   },
   buttonText: {
     color: "white",
