@@ -26,10 +26,11 @@ const Home = () => {
   function AddTask() {
     let newItem = {
       taskName: newTaskText,
-      taskPriority: newTaskPriority,
+      taskPriority: ((!newTaskPriority)? "None":newTaskPriority),
       taskDeadline: null,
       taskGroup: null,
-      taskLocation: null
+      taskLocation: null,
+      isDarkMode: isDarkMode
     };
     LISTDATA.push(newItem)
     AddTaskToFirestore(newItem.taskName, newItem.taskPriority)
@@ -42,22 +43,22 @@ const Home = () => {
     return firestoreTasks
   }
 
-  // useEffect(() => {
-  //   GetFireStoreTasks()
-  //     .then((data) => {
-  //       if (!data){return} // If user has no Tasks document, do nothing
-  //       // Clear the array before populating it, prevents duplicate data in React.StrictMode dev state
-  //       LISTDATA.length = 0;
+  useEffect(() => {
+    GetFireStoreTasks()
+      .then((data) => {
+        if (!data){return} // If user has no Tasks document, do nothing
+        // Clear the array before populating it, prevents duplicate data in React.StrictMode dev state
+        LISTDATA.length = 0;
         
-  //       Object.keys(data).forEach((key) => {
-  //         let newItem = {
-  //           taskName: data[key].name,
-  //           taskPriority: data[key].priority,
-  //         };
-  //         LISTDATA.push(newItem);
-  //       });
-  //     });
-  // }, []);
+        Object.keys(data).forEach((key) => {
+          let newItem = {
+            taskName: data[key].name,
+            taskPriority: data[key].priority,
+          };
+          LISTDATA.push(newItem);
+        });
+      });
+  }, []);
 
   const [taskEnabled, toggleTaskEnabled ] =  React.useState(false)
   

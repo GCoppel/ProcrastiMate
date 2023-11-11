@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, useColorScheme, Appearance } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, useColorScheme, Appearance, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import ToggleItem from "../components/ToggleItem";
 import TextField from "../components/TextField";
@@ -25,6 +25,8 @@ const Settings = () => {
   const [notificationsEnabled, toggleNotifications] = React.useState(false);
   const [negativeReinforcementEnabled, toggleNegativeReinforcement] = React.useState(false);
   const [studyGoal, setStudyGoal] = React.useState("");
+  const [language, setLanguage] = React.useState("")
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   useEffect(() => {
     GetFirestoreSettings().then((data) => {
@@ -32,12 +34,13 @@ const Settings = () => {
       toggleNotifications(data.Notifications);
       toggleNegativeReinforcement(data.NegativeReinforcement);
       setStudyGoal(data.WeeklyStudyGoal);
+      setLanguage(data.Language)
     });
   }, []);
 
   const SaveSettings = () => {
     UpdateSettings(
-      "Francais",
+      language,
       darkModeEnabled,
       notificationsEnabled,
       negativeReinforcementEnabled,
@@ -49,6 +52,15 @@ const Settings = () => {
     signOut(auth);
     navigation.replace("Login");
   };
+
+  const ShowHideLanguageModal = () => {
+    setLanguageModalVisible(!languageModalVisible)
+  }
+
+  const ChangeLanguage = (newLanguage) => {
+    setLanguage(newLanguage);
+    setLanguageModalVisible(false);
+  }
 
   useEffect(() => {
     // Load color scheme preference from AsyncStorage
@@ -110,6 +122,34 @@ const Settings = () => {
 
   return (
     <View style={[styles.container, darkModeEnabled? {backgroundColor: darkColor}:{backgroundColor:'white'}]}>
+      <Modal
+        animationType="slide"
+        visible={languageModalVisible}
+        transparent={true}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContentContainer}>
+          <View
+            style={[
+              styles.modalVisiblePanel,
+              { backgroundColor: darkModeEnabled ? '#121212' : "white" },
+            ]}
+          >
+            <Text style={[{fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: (darkModeEnabled? 'white':darkColor)}]}>Language:</Text>
+            <TouchableOpacity onPress={() => ChangeLanguage("English")} style={[styles.languageButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
+              <Text style={[{color: (darkModeEnabled? 'white':darkColor)}]}>English</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => ChangeLanguage("Français")} style={[styles.languageButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
+              <Text style={[{color: (darkModeEnabled? 'white':darkColor)}]}>Français</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ShowHideLanguageModal} style={[styles.languageModalCancelButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
+              <Text style={[{fontSize: 16, fontWeight: 'bold',color: (darkModeEnabled? darkColor:darkColor)}]}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <Text style={[styles.settingsTitle, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Settings</Text>
       <Text style={[styles.settingsWarning, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Note: All settings changes require app restart!</Text>
       <SettingsList />
@@ -123,24 +163,74 @@ const Settings = () => {
             entryType={'number-pad'}
             characterLimit={3}
           />
-        </View>
-      <TouchableOpacity onPress={SaveSettings} style={[styles.signOutBtn, darkModeEnabled? {backgroundColor: 'white', borderColor: 'white'}:{backgroundColor: darkColor, borderColor: darkColor}]}>
-        <Text style={[styles.signOutText, darkModeEnabled? {color: 'black'}:{color:'white'}]}>Save Settings</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={SignOut} style={[styles.signOutBtn, darkModeEnabled? {backgroundColor: darkColor, borderColor: 'white'}:{backgroundColor: 'white', borderColor: darkColor}]}>
-        <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Sign Out</Text>
-      </TouchableOpacity>
+      </View>
+      <View style={[styles.languageContainer, {marginTop: 0}]}>
+        <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Language:</Text>
+        <TouchableOpacity onPress={ShowHideLanguageModal} style={[styles.languageButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
+          <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{language}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.importantButtonsContainer}>
+        <TouchableOpacity onPress={SaveSettings} style={[styles.signOutBtn, darkModeEnabled? {backgroundColor: 'white', borderColor: 'white'}:{backgroundColor: darkColor, borderColor: 'white'}]}>
+          <Text style={[styles.signOutText, darkModeEnabled? {color: 'black'}:{color:'white'}]}>Save Settings</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={SignOut} style={[styles.signOutBtn, darkModeEnabled? {backgroundColor: darkColor, borderColor: 'white'}:{backgroundColor: 'white', borderColor: darkColor}]}>
+          <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Sign Out</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContentContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalVisiblePanel: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    width: "75%",
+    height: "50%",
+    borderRadius: 10,
+    borderColor: "darkgrey",
+    borderWidth: 2,
+  },
+  languageModalCancelButton: {
+    position: "absolute",
+    bottom: 0,
+    width: "70%",
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomWidth: 0,
+  },
+  importantButtonsContainer: {
+    position: 'absolute',
+    bottom: 25,
+    flexDirection: 'row-reverse',
+    backgroundColor: '#121212',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 20
+  },
   textbox: {
     marginTop: 20,
     marginBottom: 10,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  languageContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 25
   },
   settingsTitle: {
     fontSize: 30,
@@ -166,7 +256,16 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 3,
+    borderWidth: 2,
+    borderRadius: 10,
+    margin: 10,
+  },
+  languageButton: {
+    width: 120,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: "center",
+    borderWidth: 1.5,
     borderRadius: 10,
     margin: 10,
   },

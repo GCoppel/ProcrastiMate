@@ -6,12 +6,15 @@ import Task from "./Task";
 import HomeStyles from "../styles/HomeStyles";
 
 const TaskList = (props) => {
+  const renderTask = ({ item }) => {
+    return <Task taskName={item.taskName} taskPriority={item.taskPriority} colorTheme={props.colorTheme} />;
+  };
   return (
     <SafeAreaView >
       <FlatList
         style={HomeStyles.taskList}
         data={props.data}
-        renderItem={Task}
+        renderItem={renderTask}
         ListEmptyComponent={<Empty colorTheme={props.colorTheme}/>}
         keyExtractor={(item) => item.taskName}
         extraData={props.addTaskFunc}
