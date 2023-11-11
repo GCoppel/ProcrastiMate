@@ -232,13 +232,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#d00",
+    backgroundColor: "#7f0000",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomWidth: 0,
   },
   modalButtonText: {
-    color: "white",
+    color: "#dddddd",
     fontSize: 20,
     fontWeight: "700",
   },
@@ -269,12 +269,13 @@ const styles = StyleSheet.create({
   timeText: {
     textAlign: "center",
     fontSize: 48,
+    marginBottom: 15
   },
   buttonContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 0,
     height: "45%",
   },
   button: {

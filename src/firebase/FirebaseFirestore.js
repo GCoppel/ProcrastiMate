@@ -1,6 +1,6 @@
 import React from "react";
 import * as firebase from "firebase/app";
-import { Timestamp, getFirestore } from "firebase/firestore";
+import { Timestamp, getFirestore, updateDoc } from "firebase/firestore";
 import { auth, database } from "./FirebaseInitialize";
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
@@ -57,6 +57,15 @@ export async function AddTaskToFirestore(taskName, taskPriority) {
     { merge: true }
   );
   return;
+}
+
+export async function EditFirestoreTask(taskId, newTaskName, newTaskPriority){
+  await updateDoc(
+    doc(database, auth.currentUser.uid, "Todos"),{
+      [`${taskId}.name`]: newTaskName,
+      [`${taskId}.priority`]: newTaskPriority || 'None', // Set to 'None' if newTaskPriority is null
+    }
+  )
 }
 
 export async function GetTasks() {
