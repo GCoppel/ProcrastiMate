@@ -53,8 +53,10 @@ const HomeStyles = StyleSheet.create({
   addTaskButton: {
     borderWidth: 3,
     borderRadius: 15,
-    paddingLeft: 5,
-    paddingTop: 5,
+    padding: 3,
+    marginLeft: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   taskItem: {
     flexDirection: "row",

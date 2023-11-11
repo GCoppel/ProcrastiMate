@@ -15,7 +15,11 @@ import StreakCounter from "../components/StreakCounter";
 import AddTaskButton from "../components/AddTaskButton";
 import StudyButton from "../components/StudyButton";
 import { auth, database } from "../firebase/FirebaseInitialize";
-import { AddTaskToFirestore, EditFirestoreTask, GetTasks } from "../firebase/FirebaseFirestore";
+import {
+  AddTaskToFirestore,
+  EditFirestoreTask,
+  GetTasks,
+} from "../firebase/FirebaseFirestore";
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 
 const LISTDATA = [];
@@ -27,10 +31,9 @@ const Home = () => {
 
   const [newTaskText, onNewTaskTextChange] = React.useState();
   const [newTaskPriority, onNewTaskPriorityChange] = React.useState();
-  var [streakNum, setStreakNum] = React.useState(0);
-  function IncrementStreak() {
-    setStreakNum(streakNum + 1);
-  }
+
+  const [sortMode, setSortMode] = React.useState("highestPriority");
+
   function AddTask() {
     let newItem = {
       taskName: newTaskText,
@@ -56,6 +59,16 @@ const Home = () => {
     // Do nothing
   }, [forceRefreshCheat]);
 
+  function compareTasks(a, b) {
+    if (a.taskPriority < b.taskPriority) {
+      return 1;
+    }
+    if (a.taskPriority > b.taskPriority) {
+      return -1;
+    }
+    return 0;
+  }
+
   useEffect(() => {
     GetFireStoreTasks().then((data) => {
       if (!data) {
@@ -63,6 +76,7 @@ const Home = () => {
       } // If user has no Tasks document, do nothing
       // Clear the array before populating it, prevents duplicate data in React.StrictMode dev state
       LISTDATA.length = 0;
+      let noPriorityTasks = [];
 
       Object.keys(data).forEach((key) => {
         let newItem = {
@@ -70,8 +84,21 @@ const Home = () => {
           taskName: data[key].name,
           taskPriority: data[key].priority,
         };
-        LISTDATA.push(newItem);
+        if (newItem.taskPriority == "None") {
+          noPriorityTasks.push(newItem);
+        } else {
+          LISTDATA.push(newItem);
+        }
       });
+      // First order by highest priority
+      LISTDATA.sort(compareTasks);
+      for (i in noPriorityTasks) {
+        LISTDATA.push(noPriorityTasks[i]);
+      }
+      if (sortMode == "lowestPriority") {
+        // Then reverse order if lowest priority sort is active
+        LISTDATA.reverse();
+      }
       setForceRefreshCheat(true);
     });
   }, []);
@@ -93,9 +120,13 @@ const Home = () => {
   const saveEdit = () => {
     LISTDATA[editModalTaskIndex].taskName = editModalTaskName;
     LISTDATA[editModalTaskIndex].taskPriority = editModalTaskPriority;
-    EditFirestoreTask(LISTDATA[editModalTaskIndex].taskID, LISTDATA[editModalTaskIndex].taskName, LISTDATA[editModalTaskIndex].taskPriority)
+    EditFirestoreTask(
+      LISTDATA[editModalTaskIndex].taskID,
+      LISTDATA[editModalTaskIndex].taskName,
+      LISTDATA[editModalTaskIndex].taskPriority
+    );
     closeEditModal();
-  }
+  };
   const closeEditModal = () => {
     setEditModalVisible(false);
     setEditModalTaskName("");
@@ -127,7 +158,17 @@ const Home = () => {
             ]}
           >
             <View style={styles.contentContainer}>
-              <Text style={[styles.editModalTitle, {color:(isDarkMode? 'white':darkColor), borderColor:(isDarkMode? 'white':darkColor)}]}>Edit Task</Text>
+              <Text
+                style={[
+                  styles.editModalTitle,
+                  {
+                    color: isDarkMode ? "white" : darkColor,
+                    borderColor: isDarkMode ? "white" : darkColor,
+                  },
+                ]}
+              >
+                Edit Task
+              </Text>
               <View style={styles.editPanel}>
                 <Text style={[styles.editHeader, { color: "white" }]}>
                   Task Name:
@@ -149,20 +190,31 @@ const Home = () => {
                   colorTheme={isDarkMode ? "white" : darkColor}
                   text={editModalTaskPriority}
                   onChangeText={setEditModalTaskPriority}
-                  type={"Task Name"}
+                  type={"Task Priority"}
                   entryType={"number-pad"}
                   characterLimit={1}
                 />
               </View>
-              <TouchableOpacity onPress={saveEdit} style={[styles.saveChangesButton, {borderColor: (isDarkMode? 'white':darkColor)}]}>
-                <Text style={[{color:(isDarkMode? 'white':darkColor)}]}>Save Changes</Text>
+              <TouchableOpacity
+                onPress={saveEdit}
+                style={[
+                  styles.saveChangesButton,
+                  { borderColor: isDarkMode ? "white" : darkColor },
+                ]}
+              >
+                <Text style={[{ color: isDarkMode ? "white" : darkColor }]}>
+                  Save Changes
+                </Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={closeEditModal}
               style={[
                 styles.editModalCancelButton,
-                { borderColor: isDarkMode ? "white" : darkColor },
+                {
+                  borderColor: isDarkMode ? "white" : darkColor,
+                  backgroundColor: isDarkMode ? "white" : darkColor,
+                },
               ]}
             >
               <Text
@@ -170,7 +222,7 @@ const Home = () => {
                   {
                     fontSize: 16,
                     fontWeight: "bold",
-                    color: isDarkMode ? darkColor : darkColor,
+                    color: isDarkMode ? darkColor : "white",
                   },
                 ]}
               >
@@ -258,13 +310,13 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     padding: 25,
-    alignContent: 'center',
+    alignContent: "center",
   },
   editModalTitle: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 20,
-    textAlign: 'center',
+    textAlign: "center",
     borderBottomWidth: 3,
   },
   editHeader: {
@@ -281,10 +333,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 15,
     paddingVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '75%',
-    alignSelf: 'center'
+    alignItems: "center",
+    justifyContent: "center",
+    width: "75%",
+    alignSelf: "center",
   },
   editModalCancelButton: {
     position: "absolute",

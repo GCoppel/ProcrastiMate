@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, useColorScheme, StyleSheet, Easing } from "react-native";
+import {
+  View,
+  Text,
+  useColorScheme,
+  StyleSheet,
+  Easing,
+  TouchableOpacity,
+} from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import StudyButton from '../components/StudyButton'
-import StudyProgress from '../components/StudyProgress'
+import StudyButton from "../components/StudyButton";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { GetSettings, GetStudySessions } from "../firebase/FirebaseFirestore";
 import { useNavigation } from "@react-navigation/core";
@@ -28,8 +34,8 @@ const Study = () => {
 
   const theme = useColorScheme();
   const darkColor = "#222227";
-  const [isDarkMode, setIsDarkMode] = React.useState(theme === 'dark');
-  
+  const [isDarkMode, setIsDarkMode] = React.useState(theme === "dark");
+
   let motivationalMessage =
     motivationalMessages[
       Math.floor(Math.random() * motivationalMessages.length)
@@ -44,76 +50,129 @@ const Study = () => {
 
   async function GetFirestoreStudySessions() {
     const firestoreSessions = await GetStudySessions();
-    return firestoreSessions
+    return firestoreSessions;
   }
 
   async function GetFirestoreSettings() {
     const firestoreSettings = await GetSettings();
     return firestoreSettings;
   }
-  
-  const [streak, setStreak] = useState(0)
-  const [weeklyHours, setWeeklyHours] = useState(0)
-  const [weeklyMinutes, setWeeklyMinutes] = useState(0)
-  const [weeklySessions, setWeeklySessions] = useState(0)
-  const [weeklyGoalHours, setWeeklyGoalHours] = useState(0)
-  const [weeklyGoalMinutes, setWeeklyGoalMinutes] = useState(0)
-  const [fillAmount, setFillAmount] = useState(0)
+
+  const [streak, setStreak] = useState(0);
+  const [weeklyHours, setWeeklyHours] = useState(0);
+  const [weeklyMinutes, setWeeklyMinutes] = useState(0);
+  const [weeklySessions, setWeeklySessions] = useState(0);
+  const [weeklyGoalHours, setWeeklyGoalHours] = useState(0);
+  const [weeklyGoalMinutes, setWeeklyGoalMinutes] = useState(0);
+  const [fillAmount, setFillAmount] = useState(0);
 
   useEffect(() => {
-    GetFirestoreStudySessions()
-      .then((data) => {       
-        if (!data){return} 
-        let totalMinutes = 0
-        let totalHours = 0
-        let totalSessions = 0
-        // Parse through all sessions:
-        Object.keys(data).forEach((key) => {
-          totalMinutes += data[key].sessionLength
-          totalSessions++
-        });
-        // Convert minutes into hours & minutes:
-        while (totalMinutes > 60){
-          totalMinutes -= 60
-          totalHours++
-        }
-        // Set states:
-        setWeeklyMinutes(totalMinutes)
-        setWeeklyHours(totalHours)
-        setWeeklySessions(totalSessions)
+    GetFirestoreStudySessions().then((data) => {
+      if (!data) {
+        return;
+      }
+      let totalMinutes = 0;
+      let totalHours = 0;
+      let totalSessions = 0;
+      // Parse through all sessions:
+      Object.keys(data).forEach((key) => {
+        totalMinutes += data[key].sessionLength;
+        totalSessions++;
       });
+      // Convert minutes into hours & minutes:
+      while (totalMinutes > 60) {
+        totalMinutes -= 60;
+        totalHours++;
+      }
+      // Set states:
+      setWeeklyMinutes(totalMinutes);
+      setWeeklyHours(totalHours);
+      setWeeklySessions(totalSessions);
+    });
   }, []);
 
   useEffect(() => {
     GetFirestoreSettings().then((data) => {
-      let completedPercent = ((weeklyMinutes + (weeklyHours*60)) / (data.WeeklyStudyGoal))*100
-      setFillAmount(completedPercent);      
+      let completedPercent =
+        ((weeklyMinutes + weeklyHours * 60) / data.WeeklyStudyGoal) * 100;
+      setFillAmount(completedPercent);
       let goalHours = 0;
       let goalMinutes = data.WeeklyStudyGoal;
-      while (goalMinutes >= 60){
+      while (goalMinutes >= 60) {
         goalMinutes -= 60;
         goalHours++;
       }
       setWeeklyGoalHours(goalHours);
       setWeeklyGoalMinutes(goalMinutes);
     });
-  }, [weeklyMinutes, weeklyHours])
+  }, [weeklyMinutes, weeklyHours]);
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
-  const navigateToSessionPage = () =>{
-    navigation.replace("Session")
+  const navigateToSessionPage = () => {
+    navigation.replace("Session");
+  };
+
+  const showMoreStats = () => {
+    console.log("fuck")
   }
 
   return (
-    <View style={[styles.container, isDarkMode? {backgroundColor: darkColor}: {backgroundColor: 'white'}]}>
-      {/* <StudyProgress></StudyProgress> */}
+    <View
+      style={[
+        styles.container,
+        isDarkMode
+          ? { backgroundColor: darkColor }
+          : { backgroundColor: "white" },
+      ]}
+    >
       <View style={styles.progressContainer}>
-            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>Study Streak: {streak}</Text>
-            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>Your Weekly Goal: {(weeklyGoalHours==0)? "": weeklyGoalHours +" Hrs "}{weeklyGoalMinutes} Min</Text>
-            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>This Week: {(weeklyHours==0)? "": weeklyHours +" Hrs "}{weeklyMinutes} Min - {fillAmount.toPrecision(3)}%</Text>
-            <Text style={[styles.progressInfo, isDarkMode? {color: 'white'}:{color:darkColor}]}>Throughout {weeklySessions} Sessions</Text>
-        </View>
+        <Text
+          style={[
+            styles.progressInfo,
+            isDarkMode ? { color: "white" } : { color: darkColor },
+          ]}
+        >
+          Study Streak: {streak}
+        </Text>
+        <Text
+          style={[
+            styles.progressInfo,
+            isDarkMode ? { color: "white" } : { color: darkColor },
+          ]}
+        >
+          Your Weekly Goal:{" "}
+          {weeklyGoalHours == 0 ? "" : weeklyGoalHours + " Hrs "}
+          {weeklyGoalMinutes} Min
+        </Text>
+        <Text
+          style={[
+            styles.progressInfo,
+            isDarkMode ? { color: "white" } : { color: darkColor },
+          ]}
+        >
+          This Week: {weeklyHours == 0 ? "" : weeklyHours + " Hrs "}
+          {weeklyMinutes} Min - {fillAmount.toPrecision(3)}%
+        </Text>
+        <Text
+          style={[
+            styles.progressInfo,
+            isDarkMode ? { color: "white" } : { color: darkColor },
+          ]}
+        >
+          Throughout {weeklySessions} Sessions
+        </Text>
+        <TouchableOpacity onPress={showMoreStats} style={[styles.showMoreButton, {zIndex: 1, borderColor: (isDarkMode? 'white':darkColor)}]}>
+        <Text
+          style={[
+            {fontSize: 16},
+            isDarkMode ? { color: "white" } : { color: darkColor },
+          ]}
+        >
+          Show More Stats
+        </Text>
+      </TouchableOpacity>
+      </View>
       <AnimatedCircularProgress
         size={240}
         width={26}
@@ -133,16 +192,32 @@ const Study = () => {
             <StudyButton openSessionPage={navigateToSessionPage} />
           ) : (
             <Animated.View
-            key={"uniqueKey"}
-            entering={FadeIn.duration(500)}
-            exiting={FadeOut.duration(100)}
-          >
-            <Text style={[styles.progressText, isDarkMode? {color: 'white'}:{color:darkColor}]}>{fill.toFixed(0)}</Text>
-          </Animated.View>
+              key={"uniqueKey"}
+              entering={FadeIn.duration(500)}
+              exiting={FadeOut.duration(100)}
+            >
+              <Text
+                style={[
+                  styles.progressText,
+                  isDarkMode ? { color: "white" } : { color: darkColor },
+                ]}
+              >
+                {fill.toFixed(0)}
+              </Text>
+            </Animated.View>
           )
         }
       </AnimatedCircularProgress>
-      <Text style={[styles.motivationalMessageText, isDarkMode? {color: 'white'}:{color:darkColor}]}>{animComplete? motivationalMessage : "Let's see how you've been doing..."}</Text>
+      <Text
+        style={[
+          styles.motivationalMessageText,
+          isDarkMode ? { color: "white" } : { color: darkColor },
+        ]}
+      >
+        {animComplete
+          ? motivationalMessage
+          : "Let's see how you've been doing..."}
+      </Text>
     </View>
   );
 };
@@ -153,15 +228,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  progressContainer:{
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    height: '12%',
+  progressContainer: {
+    alignItems: "center",
+    justifyContent: "flex-start",
     marginBottom: 25,
   },
   progressInfo: {
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   motivationalMessageText: {
     fontSize: 25,
@@ -171,7 +245,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 27,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   studyButton: {
     marginTop: 50,
@@ -190,6 +264,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     flexWrap: "wrap",
     textAlign: "center",
+  },
+  showMoreButton: {
+    borderWidth: 3,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    marginVertical: 10,
   },
 });
 

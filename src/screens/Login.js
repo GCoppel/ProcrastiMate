@@ -95,11 +95,11 @@ const Login = () => {
         email={userEmail}
         password={userPassword}
       />
-      <TouchableOpacity onPress={toggleColorScheme}>
+      {/* <TouchableOpacity onPress={toggleColorScheme}>
         <Text style={[isDarkMode ? { color: "white" } : { color: "black" }]}>
           Toggle Color Scheme
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };
