@@ -151,7 +151,6 @@ const Settings = () => {
         </View>
       </Modal>
       <Text style={[styles.settingsTitle, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Settings</Text>
-      <Text style={[styles.settingsWarning, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Note: All settings changes require app restart!</Text>
       <SettingsList />
       <View style={styles.textbox}>
           <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Weekly Study Goal:</Text>
@@ -166,6 +165,7 @@ const Settings = () => {
       </View>
       <View style={[styles.languageContainer, {marginTop: 0}]}>
         <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Language:</Text>
+        <Text style={[styles.settingsWarning, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Requires app restart</Text>
         <TouchableOpacity onPress={ShowHideLanguageModal} style={[styles.languageButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
           <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{language}</Text>
         </TouchableOpacity>
@@ -238,9 +238,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   settingsWarning: {
-    fontSize: 14,
+    fontSize: 9,
+    fontWeight: '300',
     fontStyle: 'italic',
-    marginBottom: 15,
+    margin: 0
   },
   container: {
     flex: 1,
@@ -267,7 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1.5,
     borderRadius: 10,
-    margin: 10,
+    margin: 5,
   },
   signOutText: {
     color: "white",

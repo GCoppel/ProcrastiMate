@@ -27,7 +27,6 @@ const StudyButton = (props) => {
     <Animated.View
       key={"uniqueKey"}
       entering={FadeIn.duration(1000)}
-      exiting={FadeOut.duration(500)}
     >
       <TouchableHighlight style={HomeStyles.studyButton} {...touchProps}>
         <Text style={HomeStyles.btnText}>Study</Text>

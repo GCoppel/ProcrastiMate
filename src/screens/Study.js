@@ -19,9 +19,10 @@ const Study = () => {
     "Keep up the good work!",
     "Proud of you, son.",
     "What're you studying?",
-    "It's a good day for studying.",
+    "Not bad!",
     "Lookin' good!",
     "What're we working on today?",
+    "Hey, look at you go!",
   ];
   const negativeReinforcementMessages = [
     "You can do better.",
@@ -114,7 +115,7 @@ const Study = () => {
   };
 
   const showMoreStats = () => {
-    console.log("fuck")
+    console.log("Show More Stats")
   }
 
   return (

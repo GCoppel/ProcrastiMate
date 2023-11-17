@@ -17,10 +17,13 @@ import StudyButton from "../components/StudyButton";
 import { auth, database } from "../firebase/FirebaseInitialize";
 import {
   AddTaskToFirestore,
+  DeleteFirestoreTask,
   EditFirestoreTask,
   GetTasks,
+  MarkFirestoreTaskComplete,
 } from "../firebase/FirebaseFirestore";
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
+import { ScrollView } from "react-native";
 
 const LISTDATA = [];
 
@@ -36,15 +39,17 @@ const Home = () => {
 
   function AddTask() {
     let newItem = {
+      taskID: Date.now(),
       taskName: newTaskText,
       taskPriority: !newTaskPriority ? "None" : newTaskPriority,
+      taskCompleted: false,
       taskDeadline: null,
       taskGroup: null,
       taskLocation: null,
       isDarkMode: isDarkMode,
     };
     LISTDATA.push(newItem);
-    AddTaskToFirestore(newItem.taskName, newItem.taskPriority);
+    AddTaskToFirestore(newItem.taskID, newItem.taskName, newItem.taskPriority, newItem.taskCompleted);
     onNewTaskTextChange("");
     onNewTaskPriorityChange("");
   }
@@ -83,6 +88,7 @@ const Home = () => {
           taskID: data[key].id,
           taskName: data[key].name,
           taskPriority: data[key].priority,
+          taskCompleted: data[key].complete,
         };
         if (newItem.taskPriority == "None") {
           noPriorityTasks.push(newItem);
@@ -127,6 +133,18 @@ const Home = () => {
     );
     closeEditModal();
   };
+  const deleteTask = () => {
+    DeleteFirestoreTask(LISTDATA[editModalTaskIndex].taskID);
+    LISTDATA.splice(editModalTaskIndex, 1);
+    closeEditModal();
+  }
+  const setTaskCompleted = (taskIndex) => {
+    console.log(LISTDATA[taskIndex].taskName + " " + LISTDATA[taskIndex].taskCompleted)
+    let isComplete = !(LISTDATA[taskIndex].taskCompleted);
+    MarkFirestoreTaskComplete(LISTDATA[taskIndex].taskID, isComplete);
+    LISTDATA[taskIndex].taskCompleted = isComplete;
+    setForceRefreshCheat(!forceRefreshCheat); // Call a refresh to make the TaskList update its appearance
+  }
   const closeEditModal = () => {
     setEditModalVisible(false);
     setEditModalTaskName("");
@@ -157,7 +175,7 @@ const Home = () => {
               { backgroundColor: isDarkMode ? "#121212" : "white" },
             ]}
           >
-            <View style={styles.contentContainer}>
+            <ScrollView style={styles.contentContainer}>
               <Text
                 style={[
                   styles.editModalTitle,
@@ -202,11 +220,16 @@ const Home = () => {
                   { borderColor: isDarkMode ? "white" : darkColor },
                 ]}
               >
-                <Text style={[{ color: isDarkMode ? "white" : darkColor }]}>
+                <Text style={[{ fontWeight: 'bold', color: isDarkMode ? "white" : darkColor }]}>
                   Save Changes
                 </Text>
               </TouchableOpacity>
-            </View>
+              <TouchableOpacity onPress={deleteTask} style={[styles.saveChangesButton, {borderColor: '#af2525'}]}>
+                <Text style={{fontWeight: 'bold', color: '#ef2525'}}>
+                  Delete Task
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
             <TouchableOpacity
               onPress={closeEditModal}
               style={[
@@ -282,6 +305,7 @@ const Home = () => {
           data={LISTDATA}
           colorTheme={isDarkMode ? "white" : darkColor}
           editTask={editTask}
+          setTaskCompleted={setTaskCompleted}
         />
       </View>
     </SafeAreaView>
@@ -310,6 +334,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     padding: 25,
+    paddingBottom: 100,
     alignContent: "center",
   },
   editModalTitle: {
@@ -328,14 +353,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   saveChangesButton: {
-    marginTop: 25,
+    marginTop: 10,
     borderWidth: 3,
     borderRadius: 10,
     paddingHorizontal: 15,
     paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
-    width: "75%",
+    width: 150,
     alignSelf: "center",
   },
   editModalCancelButton: {

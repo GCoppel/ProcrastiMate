@@ -14,6 +14,8 @@ const TaskList = (props) => {
           colorTheme={props.colorTheme}
           editTask={props.editTask}
           taskKey={index}
+          completed={item.taskCompleted}
+          toggleCompleted={props.setTaskCompleted}
         />
     );
   };
