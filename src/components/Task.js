@@ -24,14 +24,28 @@ const Task = (props) => {
         showCheckmark={false}
         disabled={false}
       />
-      <View style={styles.infoWrapper}>
+      <TouchableOpacity onPress={()=>props.toggleCollapsed(props.taskKey)} style={styles.infoWrapper}>
         <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>
           {"Name: " + props.taskName}
         </Text>
+        {(props.taskPriority != "None")? 
         <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>
-          {"Priority: " + props.taskPriority}
-        </Text>
-      </View>
+          {"Priority: " + props.taskPriority} 
+        </Text> : null
+        }
+        {props.collapsed? 
+        null : 
+        <>
+          {(props.taskPriority == "None")? <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>
+            {"Priority: " + props.taskPriority} 
+          </Text> : null
+          }
+          <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Deadline: {props.taskDeadline}</Text>
+          <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Location: {props.taskLocation}</Text>
+          <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Group: {props.taskGroup}</Text>
+        </>
+        }
+      </TouchableOpacity>
       <View style={styles.editWrapper}>
         <TouchableOpacity onPress={()=>props.editTask(props.taskKey)} style={[styles.editButton, props.completed? {borderColor: 'grey'}:{borderColor: props.colorTheme}]}>
           <Feather name="edit-3" size={21} style={props.completed? {color:'grey'}:{color: (props.colorTheme)}} />
@@ -47,9 +61,10 @@ const styles = StyleSheet.create({
   },
   infoWrapper: {
     marginLeft: 5,
+    flexGrow: 1
   },
   editWrapper: {
-    flexGrow: 1,
+    flexGrow: 0,
     alignItems: 'flex-end'
   },
   editButton: {

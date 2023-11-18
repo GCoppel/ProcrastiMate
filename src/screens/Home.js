@@ -43,13 +43,14 @@ const Home = () => {
       taskName: newTaskText,
       taskPriority: !newTaskPriority ? "None" : newTaskPriority,
       taskCompleted: false,
-      taskDeadline: null,
-      taskGroup: null,
-      taskLocation: null,
+      taskDeadline: "None",
+      taskGroup: "None",
+      taskLocation: "None",
       isDarkMode: isDarkMode,
+      collapsed: true
     };
     LISTDATA.push(newItem);
-    AddTaskToFirestore(newItem.taskID, newItem.taskName, newItem.taskPriority, newItem.taskCompleted);
+    AddTaskToFirestore(newItem.taskID, newItem.taskName, newItem.taskPriority, newItem.taskDeadline, newItem.taskLocation, newItem.taskGroup, newItem.taskCompleted);
     onNewTaskTextChange("");
     onNewTaskPriorityChange("");
   }
@@ -65,10 +66,10 @@ const Home = () => {
   }, [forceRefreshCheat]);
 
   function compareTasks(a, b) {
-    if (a.taskPriority < b.taskPriority) {
+    if (a.taskPriority > b.taskPriority) {
       return 1;
     }
-    if (a.taskPriority > b.taskPriority) {
+    if (a.taskPriority < b.taskPriority) {
       return -1;
     }
     return 0;
@@ -89,6 +90,10 @@ const Home = () => {
           taskName: data[key].name,
           taskPriority: data[key].priority,
           taskCompleted: data[key].complete,
+          taskDeadline: "December 11, 2023",
+          taskGroup: "Graduation Stuff",
+          taskLocation: "Home",
+          collapsed: true, // Always collapsed on page open
         };
         if (newItem.taskPriority == "None") {
           noPriorityTasks.push(newItem);
@@ -114,12 +119,28 @@ const Home = () => {
   const [editModalTaskIndex, setEditModalTaskIndex] = React.useState(0);
   const [editModalTaskName, setEditModalTaskName] = React.useState("");
   const [editModalTaskPriority, setEditModalTaskPriority] = React.useState("");
+  const [editModalTaskDeadline, setEditModalTaskDeadline] = React.useState("");
+  const [editModalTaskLocation, setEditModalTaskLocation] = React.useState("");
+  const [editModalTaskGroup, setEditModalTaskGroup] = React.useState("");
 
+  const collapseTask = (taskIndex) => {
+    LISTDATA[taskIndex].collapsed = !(LISTDATA[taskIndex].collapsed); // Collapse/Expand Task
+    setForceRefreshCheat(!forceRefreshCheat); // Force refresh on TaskList
+  }
   const editTask = (taskIndex) => {
     setEditModalTaskIndex(taskIndex);
     setEditModalTaskName(LISTDATA[taskIndex].taskName);
     if (LISTDATA[taskIndex].taskPriority != "None") {
       setEditModalTaskPriority(LISTDATA[taskIndex].taskPriority);
+    }
+    if (LISTDATA[taskIndex].taskDeadline != "None") {
+      setEditModalTaskDeadline(LISTDATA[taskIndex].taskDeadline);
+    }
+    if (LISTDATA[taskIndex].taskLocation != "None") {
+      setEditModalTaskLocation(LISTDATA[taskIndex].taskLocation);
+    }
+    if (LISTDATA[taskIndex].taskGroup != "None") {
+      setEditModalTaskGroup(LISTDATA[taskIndex].taskGroup);
     }
     setEditModalVisible(true);
   };
@@ -129,7 +150,10 @@ const Home = () => {
     EditFirestoreTask(
       LISTDATA[editModalTaskIndex].taskID,
       LISTDATA[editModalTaskIndex].taskName,
-      LISTDATA[editModalTaskIndex].taskPriority
+      LISTDATA[editModalTaskIndex].taskPriority,
+      LISTDATA[editModalTaskIndex].taskDeadline,
+      LISTDATA[editModalTaskIndex].taskLocation,
+      LISTDATA[editModalTaskIndex].taskGroup,
     );
     closeEditModal();
   };
@@ -139,7 +163,6 @@ const Home = () => {
     closeEditModal();
   }
   const setTaskCompleted = (taskIndex) => {
-    console.log(LISTDATA[taskIndex].taskName + " " + LISTDATA[taskIndex].taskCompleted)
     let isComplete = !(LISTDATA[taskIndex].taskCompleted);
     MarkFirestoreTaskComplete(LISTDATA[taskIndex].taskID, isComplete);
     LISTDATA[taskIndex].taskCompleted = isComplete;
@@ -202,7 +225,7 @@ const Home = () => {
               </View>
               <View style={styles.editPanel}>
                 <Text style={[styles.editHeader, { color: "white" }]}>
-                  Task Priority:
+                  Priority:
                 </Text>
                 <TextField
                   colorTheme={isDarkMode ? "white" : darkColor}
@@ -211,6 +234,45 @@ const Home = () => {
                   type={"Task Priority"}
                   entryType={"number-pad"}
                   characterLimit={1}
+                />
+              </View>
+              <View style={styles.editPanel}>
+                <Text style={[styles.editHeader, { color: "white" }]}>
+                  Date/Deadline:
+                </Text>
+                <TextField
+                  colorTheme={isDarkMode ? "white" : darkColor}
+                  text={editModalTaskDeadline}
+                  onChangeText={setEditModalTaskDeadline}
+                  type={"Task Date/Deadline"}
+                  entryType={"default"}
+                  characterLimit={25}
+                />
+              </View>
+              <View style={styles.editPanel}>
+                <Text style={[styles.editHeader, { color: "white" }]}>
+                  Location:
+                </Text>
+                <TextField
+                  colorTheme={isDarkMode ? "white" : darkColor}
+                  text={editModalTaskLocation}
+                  onChangeText={setEditModalTaskLocation}
+                  type={"Task Location"}
+                  entryType={"default"}
+                  characterLimit={25}
+                />
+              </View>
+              <View style={styles.editPanel}>
+                <Text style={[styles.editHeader, { color: "white" }]}>
+                  Group:
+                </Text>
+                <TextField
+                  colorTheme={isDarkMode ? "white" : darkColor}
+                  text={editModalTaskGroup}
+                  onChangeText={setEditModalTaskGroup}
+                  type={"Task Group Name"}
+                  entryType={"default"}
+                  characterLimit={25}
                 />
               </View>
               <TouchableOpacity
@@ -224,7 +286,7 @@ const Home = () => {
                   Save Changes
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={deleteTask} style={[styles.saveChangesButton, {borderColor: '#af2525'}]}>
+              <TouchableOpacity onPress={deleteTask} style={[styles.saveChangesButton, {borderColor: '#af2525', marginBottom: '50%'}]}>
                 <Text style={{fontWeight: 'bold', color: '#ef2525'}}>
                   Delete Task
                 </Text>
@@ -306,6 +368,7 @@ const Home = () => {
           colorTheme={isDarkMode ? "white" : darkColor}
           editTask={editTask}
           setTaskCompleted={setTaskCompleted}
+          toggleCollapsed={collapseTask}
         />
       </View>
     </SafeAreaView>
@@ -332,9 +395,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   contentContainer: {
-    flexGrow: 1,
     padding: 25,
-    paddingBottom: 100,
     alignContent: "center",
   },
   editModalTitle: {

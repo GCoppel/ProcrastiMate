@@ -6,11 +6,12 @@ import {
   StyleSheet,
   Easing,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import StudyButton from "../components/StudyButton";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { GetSettings, GetStudySessions } from "../firebase/FirebaseFirestore";
+import { GetSettings, GetStudySessions, GetStudyStreak } from "../firebase/FirebaseFirestore";
 import { useNavigation } from "@react-navigation/core";
 
 const Study = () => {
@@ -32,6 +33,9 @@ const Study = () => {
     "I'll be honest, it's pretty pathetic that you're not done yet.",
     "Your dad thinks you're a failure. Go on, prove him wrong.",
   ];
+
+  const currentDate = new Date();
+  const today = currentDate.getDay();
 
   const theme = useColorScheme();
   const darkColor = "#222227";
@@ -59,6 +63,11 @@ const Study = () => {
     return firestoreSettings;
   }
 
+  async function GetFirestoreStreak() {
+    const firestoreStreak = await GetStudyStreak();
+    return firestoreStreak;
+  }
+
   const [streak, setStreak] = useState(0);
   const [weeklyHours, setWeeklyHours] = useState(0);
   const [weeklyMinutes, setWeeklyMinutes] = useState(0);
@@ -66,6 +75,9 @@ const Study = () => {
   const [weeklyGoalHours, setWeeklyGoalHours] = useState(0);
   const [weeklyGoalMinutes, setWeeklyGoalMinutes] = useState(0);
   const [fillAmount, setFillAmount] = useState(0);
+  const [extraHours, setExtraHours] = useState(0);
+  const [extraMinutes, setExtraMinutes] = useState(0);
+  const [extraTime, setExtraTime] = useState(0);
 
   useEffect(() => {
     GetFirestoreStudySessions().then((data) => {
@@ -90,13 +102,23 @@ const Study = () => {
       setWeeklyHours(totalHours);
       setWeeklySessions(totalSessions);
     });
+    GetFirestoreStreak().then((weeks) => {
+      setStreak(weeks);
+    });
   }, []);
 
   useEffect(() => {
     GetFirestoreSettings().then((data) => {
       let completedPercent =
         ((weeklyMinutes + weeklyHours * 60) / data.WeeklyStudyGoal) * 100;
-      setFillAmount(completedPercent);
+        if (completedPercent > 100){
+          setFillAmount(100);
+          setExtraTime(completedPercent-100);
+          setExtraMinutes((weeklyMinutes + (weeklyHours*60)) - data.WeeklyStudyGoal)
+        }
+        else {
+          setFillAmount(completedPercent);
+        }
       let goalHours = 0;
       let goalMinutes = data.WeeklyStudyGoal;
       while (goalMinutes >= 60) {
@@ -115,115 +137,230 @@ const Study = () => {
   };
 
   const showMoreStats = () => {
-    console.log("Show More Stats")
-  }
+    ShowHideLanguageModal();
+  };
+
+  const [showMoreModalVisible, setModalVisible] = React.useState(false);
+
+  const ShowHideLanguageModal = () => {
+    setModalVisible(!showMoreModalVisible);
+  };
 
   return (
-    <View
-      style={[
-        styles.container,
-        isDarkMode
-          ? { backgroundColor: darkColor }
-          : { backgroundColor: "white" },
-      ]}
-    >
-      <View style={styles.progressContainer}>
-        <Text
-          style={[
-            styles.progressInfo,
-            isDarkMode ? { color: "white" } : { color: darkColor },
-          ]}
-        >
-          Study Streak: {streak}
-        </Text>
-        <Text
-          style={[
-            styles.progressInfo,
-            isDarkMode ? { color: "white" } : { color: darkColor },
-          ]}
-        >
-          Your Weekly Goal:{" "}
-          {weeklyGoalHours == 0 ? "" : weeklyGoalHours + " Hrs "}
-          {weeklyGoalMinutes} Min
-        </Text>
-        <Text
-          style={[
-            styles.progressInfo,
-            isDarkMode ? { color: "white" } : { color: darkColor },
-          ]}
-        >
-          This Week: {weeklyHours == 0 ? "" : weeklyHours + " Hrs "}
-          {weeklyMinutes} Min - {fillAmount.toPrecision(3)}%
-        </Text>
-        <Text
-          style={[
-            styles.progressInfo,
-            isDarkMode ? { color: "white" } : { color: darkColor },
-          ]}
-        >
-          Throughout {weeklySessions} Sessions
-        </Text>
-        <TouchableOpacity onPress={showMoreStats} style={[styles.showMoreButton, {zIndex: 1, borderColor: (isDarkMode? 'white':darkColor)}]}>
-        <Text
-          style={[
-            {fontSize: 16},
-            isDarkMode ? { color: "white" } : { color: darkColor },
-          ]}
-        >
-          Show More Stats
-        </Text>
-      </TouchableOpacity>
-      </View>
-      <AnimatedCircularProgress
-        size={240}
-        width={26}
-        rotation={-115}
-        lineCap="round"
-        arcSweepAngle={230}
-        fill={fillAmount} // Use the fill state
-        tintColor={"#550000"}
-        tintColorSecondary={"#009900"}
-        duration={3000}
-        easing={Easing.inOut(Easing.ease)}
-        onAnimationComplete={() => setAnimComplete(true)}
-        backgroundColor={"#999999"}
+    <>
+      <Modal
+        animationType="slide"
+        visible={showMoreModalVisible}
+        transparent={true}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
       >
-        {(fill) =>
-          animComplete ? (
-            <StudyButton openSessionPage={navigateToSessionPage} />
-          ) : (
-            <Animated.View
-              key={"uniqueKey"}
-              entering={FadeIn.duration(500)}
-              exiting={FadeOut.duration(100)}
+        <View style={styles.modalContentContainer}>
+          <View
+            style={[
+              styles.modalVisiblePanel,
+              { backgroundColor: isDarkMode ? "#121212" : "white" },
+            ]}
+          >
+            <Text
+              style={[
+                styles.progressInfo,
+                isDarkMode ? { color: "white" } : { color: darkColor },
+              ]}
+            >
+              Study Streak: {streak}
+            </Text>
+            <Text
+              style={[
+                styles.progressInfo,
+                isDarkMode ? { color: "white" } : { color: darkColor },
+              ]}
+            >
+              Your Weekly Goal:{" "}
+              {weeklyGoalHours == 0 ? "" : weeklyGoalHours + " Hrs "}
+              {weeklyGoalMinutes} Min
+            </Text>
+            <Text
+              style={[
+                styles.progressInfo,
+                isDarkMode ? { color: "white" } : { color: darkColor },
+              ]}
+            >
+              This Week: {weeklyHours == 0 ? "" : weeklyHours + " Hrs "}
+              {weeklyMinutes} Min - {fillAmount.toPrecision(3)}%
+            </Text>
+            <Text
+            style={[
+              styles.progressInfo,
+              isDarkMode ? { color: "white" } : { color: darkColor },
+            ]}
+          >
+            Banked Time: {extraHours == 0 ? "" : extraHours + " Hrs "}
+            {extraMinutes} Min - {extraTime.toPrecision(3)}%
+          </Text>
+            <Text
+              style={[
+                styles.progressInfo,
+                isDarkMode ? { color: "white" } : { color: darkColor },
+              ]}
+            >
+              Throughout {weeklySessions} Sessions
+            </Text>
+            <TouchableOpacity
+              onPress={ShowHideLanguageModal}
+              style={[
+                styles.languageModalCancelButton,
+                { borderColor: isDarkMode ? "white" : darkColor },
+              ]}
             >
               <Text
                 style={[
-                  styles.progressText,
-                  isDarkMode ? { color: "white" } : { color: darkColor },
+                  {
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    color: isDarkMode ? darkColor : darkColor,
+                  },
                 ]}
               >
-                {fill.toFixed(0)}
+                Close
               </Text>
-            </Animated.View>
-          )
-        }
-      </AnimatedCircularProgress>
-      <Text
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <View
         style={[
-          styles.motivationalMessageText,
-          isDarkMode ? { color: "white" } : { color: darkColor },
+          styles.container,
+          isDarkMode
+            ? { backgroundColor: darkColor }
+            : { backgroundColor: "white" },
         ]}
       >
-        {animComplete
-          ? motivationalMessage
-          : "Let's see how you've been doing..."}
-      </Text>
-    </View>
+        <View style={styles.progressContainer}>
+          <Text
+            style={[
+              styles.progressInfo,
+              isDarkMode ? { color: "white" } : { color: darkColor },
+            ]}
+          >
+            Study Streak: {streak}
+          </Text>
+          <Text
+            style={[
+              styles.progressInfo,
+              isDarkMode ? { color: "white" } : { color: darkColor },
+            ]}
+          >
+            This Week: {weeklyHours == 0 ? "" : weeklyHours + " Hrs "}
+            {weeklyMinutes} Min - {fillAmount.toPrecision(3)}%
+          </Text>
+          {(extraTime != 0)?           
+          <Text
+            style={[
+              styles.progressInfo,
+              isDarkMode ? { color: "white" } : { color: darkColor },
+            ]}
+          >
+            Banked Time: {extraHours == 0 ? "" : extraHours + " Hrs "}
+            {extraMinutes} Min - {extraTime.toPrecision(3)}%
+          </Text> : null
+          }
+          <TouchableOpacity
+            onPress={showMoreStats}
+            style={[
+              styles.showMoreButton,
+              { zIndex: 1, borderColor: isDarkMode ? "white" : darkColor },
+            ]}
+          >
+            <Text
+              style={[
+                { fontSize: 16 },
+                isDarkMode ? { color: "white" } : { color: darkColor },
+              ]}
+            >
+              Show More Info
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <AnimatedCircularProgress
+          size={240}
+          width={26}
+          rotation={-115}
+          lineCap="round"
+          arcSweepAngle={230}
+          fill={fillAmount} // Use the fill state
+          tintColor={"#550000"}
+          tintColorSecondary={"#009900"}
+          duration={3000}
+          easing={Easing.inOut(Easing.ease)}
+          onAnimationComplete={() => setAnimComplete(true)}
+          backgroundColor={"#999999"}
+        >
+          {(fill) =>
+            animComplete ? (
+              <StudyButton openSessionPage={navigateToSessionPage} />
+            ) : (
+              <Animated.View
+                key={"uniqueKey"}
+                entering={FadeIn.duration(500)}
+                exiting={FadeOut.duration(100)}
+              >
+                <Text
+                  style={[
+                    styles.progressText,
+                    isDarkMode ? { color: "white" } : { color: darkColor },
+                  ]}
+                >
+                  {fill.toFixed(0)}
+                </Text>
+              </Animated.View>
+            )
+          }
+        </AnimatedCircularProgress>
+        <Text
+          style={[
+            styles.motivationalMessageText,
+            isDarkMode ? { color: "white" } : { color: darkColor },
+          ]}
+        >
+          {animComplete
+            ? motivationalMessage
+            : "Let's see how you've been doing..."}
+        </Text>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContentContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalVisiblePanel: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    width: "75%",
+    height: "50%",
+    borderRadius: 10,
+    borderColor: "darkgrey",
+    borderWidth: 2,
+  },
+  languageModalCancelButton: {
+    position: "absolute",
+    bottom: 0,
+    width: "70%",
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomWidth: 0,
+  },
   container: {
     flex: 1,
     alignItems: "center",

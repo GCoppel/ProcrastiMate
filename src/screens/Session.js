@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -10,7 +10,13 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import TextField from "../components/TextField";
-import { AddStudySession } from "../firebase/FirebaseFirestore";
+import {
+  AddStudySession,
+  GetStudySessions,
+  UpdateStudyStreak,
+  GetSettings,
+  GetStudyStreak,
+} from "../firebase/FirebaseFirestore";
 
 const Session = () => {
   const theme = useColorScheme();
@@ -20,6 +26,45 @@ const Session = () => {
   const [userEmail, onChangeUserEmail] = React.useState("admin@test.com");
   const [userPassword, onChangeUserPassword] = React.useState("password");
   navigation = useNavigation();
+
+  const [pastSessionsTotal, setPastSessionsTotal] = React.useState();
+  const [studyGoal, setStudyGoal] = React.useState();
+  const [studyStreak, setStudyStreak] = React.useState();
+
+  async function GetFirestoreStudySessions() {
+    const firestoreSessions = await GetStudySessions();
+    return firestoreSessions;
+  }
+
+  async function GetFirestoreSettings() {
+    const firestoreSettings = await GetSettings();
+    return firestoreSettings;
+  }
+
+  async function GetFirestoreStreak() {
+    const firestoreStreak = await GetStudyStreak();
+    return firestoreStreak;
+  }
+
+  useEffect(() => {
+    GetFirestoreStudySessions().then((data) => {
+      if (!data) {
+        return;
+      }
+      let totalMinutes = 0;
+      // Parse through all sessions:
+      Object.keys(data).forEach((key) => {
+        totalMinutes += data[key].sessionLength;
+      });
+      setPastSessionsTotal(totalMinutes);
+    });
+    GetFirestoreSettings().then((data) => {
+      setStudyGoal(data.WeeklyStudyGoal);
+    });
+    GetFirestoreStreak().then((streak) => {
+      setStudyStreak(streak);
+    });
+  }, []);
 
   // State and refs to manage time and Timer status
   const [seconds, setSeconds] = useState(0);
@@ -75,9 +120,18 @@ const Session = () => {
     if (totalTime >= 1) {
       let sessionSubj =
         sessionSubject == "" ? "NONE" : sessionSubject.toUpperCase();
+      if (pastSessionsTotal < studyGoal) {
+        // If our study goal has not already been met,
+        if (pastSessionsTotal + totalTime >= studyGoal) {
+          // But this session met the goal,
+          UpdateStudyStreak(studyStreak + 1);
+        }
+      }
       AddStudySession(totalTime, sessionSubj);
+      navigation.replace("Navigator");
+    } else {
+      navigation.replace("Navigator");
     }
-    navigation.replace("Navigator");
   };
   const onEndPress = () => {
     setModalVisible(true);
@@ -92,7 +146,12 @@ const Session = () => {
   const [sessionSubject, setSessionSubject] = useState("");
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: (isDarkMode? darkColor:'white')}]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? darkColor : "white" },
+      ]}
+    >
       <Modal
         animationType="slide"
         visible={modalVisible}
@@ -105,7 +164,7 @@ const Session = () => {
           <View
             style={[
               styles.modalVisiblePanel,
-              { backgroundColor: isDarkMode ? '#121212' : "white" },
+              { backgroundColor: isDarkMode ? "#121212" : "white" },
             ]}
           >
             <Text
@@ -127,10 +186,20 @@ const Session = () => {
               type={"Session Subject (Optional)"}
             />
             <TouchableOpacity
-              style={[styles.endSessionConfirmButton, {backgroundColor: (isDarkMode? 'white':darkColor)}]}
+              style={[
+                styles.endSessionConfirmButton,
+                { backgroundColor: isDarkMode ? "white" : darkColor },
+              ]}
               onPress={() => onEndConfirm()}
             >
-              <Text style={[styles.modalButtonText, {color: isDarkMode ? darkColor : 'white' }]}>End Session</Text>
+              <Text
+                style={[
+                  styles.modalButtonText,
+                  { color: isDarkMode ? darkColor : "white" },
+                ]}
+              >
+                End Session
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.endSessionCancelButton}
@@ -142,7 +211,9 @@ const Session = () => {
         </View>
       </Modal>
       <View style={styles.timerContainer}>
-        <Text style={[styles.timeText, { color: isDarkMode ? "white" : darkColor },]}>
+        <Text
+          style={[styles.timeText, { color: isDarkMode ? "white" : darkColor }]}
+        >
           {minutes == 0 ? "" : minutes + (minutes == 1 ? " Min " : " Mins ")}
           {seconds} Sec
         </Text>
@@ -154,13 +225,17 @@ const Session = () => {
               style={[styles.button, styles.pauseButton]}
               onPress={pauseTimer}
             >
-              <Text style={[styles.buttonText, {color: '#9999ff'}]}>Pause</Text>
+              <Text style={[styles.buttonText, { color: "#9999ff" }]}>
+                Pause
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.resetButton]}
               onPress={resetTimer}
             >
-              <Text style={[styles.buttonText, {color: '#ff0000'}]}>Cancel</Text>
+              <Text style={[styles.buttonText, { color: "#ff0000" }]}>
+                Cancel
+              </Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -172,7 +247,9 @@ const Session = () => {
                   style={[styles.button, styles.resumeButton]}
                   onPress={resumeTimer}
                 >
-                  <Text style={[styles.buttonText, {color: '#33ff33'}]}>Resume</Text>
+                  <Text style={[styles.buttonText, { color: "#33ff33" }]}>
+                    Resume
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 // If time is 0, we want the start button
@@ -181,7 +258,9 @@ const Session = () => {
                     style={[styles.button, styles.startButton]}
                     onPress={startTimer}
                   >
-                    <Text style={[styles.buttonText, {color: '#33ff33'}]}>Start</Text>
+                    <Text style={[styles.buttonText, { color: "#33ff33" }]}>
+                      Start
+                    </Text>
                   </TouchableOpacity>
                 </>
               )
@@ -189,8 +268,21 @@ const Session = () => {
           </View>
         )}
       </View>
-      <TouchableOpacity style={[styles.endSessionButton, { borderColor: isDarkMode ? "white" : darkColor },]} onPress={onEndPress}>
-        <Text style={[styles.endSessionButtonText, { color: isDarkMode ? "white" : darkColor },]}>End Session</Text>
+      <TouchableOpacity
+        style={[
+          styles.endSessionButton,
+          { borderColor: isDarkMode ? "white" : darkColor },
+        ]}
+        onPress={onEndPress}
+      >
+        <Text
+          style={[
+            styles.endSessionButtonText,
+            { color: isDarkMode ? "white" : darkColor },
+          ]}
+        >
+          End Session
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -269,7 +361,7 @@ const styles = StyleSheet.create({
   timeText: {
     textAlign: "center",
     fontSize: 48,
-    marginBottom: 15
+    marginBottom: 15,
   },
   buttonContainer: {
     flexDirection: "row",

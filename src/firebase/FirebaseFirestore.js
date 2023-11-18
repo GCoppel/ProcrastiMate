@@ -18,6 +18,28 @@ export async function SetDefaultSettings() {
   });
 }
 
+export async function UpdateStudyStreak(newStreakValue){
+  await setDoc(doc(database, auth.currentUser.uid, "Streak"), {
+    SuccessiveWeeks: newStreakValue
+  })
+}
+
+export async function GetStudyStreak(){
+  const docRef = doc(database, auth.currentUser.uid, "Streak");
+  const docSnap = await getDoc(docRef);
+  let streakData;
+  let streakValue;
+  if (docSnap.exists()){
+    streakData = docSnap.data();
+    streakValue = streakData.SuccessiveWeeks;
+  }
+  else {
+    streakData = null;
+    console.log("No such document!");
+  }
+  return streakValue;
+}
+
 export async function UpdateSettings(
   language,
   darkMode,
@@ -47,7 +69,7 @@ export async function GetSettings() {
   return settingsData;
 }
 
-export async function AddTaskToFirestore(taskID, taskName, taskPriority, taskComplete) {
+export async function AddTaskToFirestore(taskID, taskName, taskPriority,  newTaskDeadline, newTaskLocation, newTaskGroup, taskComplete) {
   if (taskPriority == null) {
     taskPriority = "None";
   }
@@ -58,6 +80,9 @@ export async function AddTaskToFirestore(taskID, taskName, taskPriority, taskCom
         id: taskID,
         name: taskName,
         priority: taskPriority,
+        deadline: newTaskDeadline,
+        location: newTaskLocation,
+        group: newTaskGroup,
         complete: taskComplete,
       },
     },
@@ -66,10 +91,13 @@ export async function AddTaskToFirestore(taskID, taskName, taskPriority, taskCom
   return;
 }
 
-export async function EditFirestoreTask(taskId, newTaskName, newTaskPriority) {
+export async function EditFirestoreTask(taskId, newTaskName, newTaskPriority, newTaskDeadline, newTaskLocation, newTaskGroup) {
   await updateDoc(doc(database, auth.currentUser.uid, "Todos"), {
     [`${taskId}.name`]: newTaskName,
     [`${taskId}.priority`]: newTaskPriority || "None", // Set to 'None' if newTaskPriority is null
+    [`${taskId}.deadline`]: newTaskDeadline || "None",
+    [`${taskId}.location`]: newTaskLocation || "None",
+    [`${taskId}.group`]: newTaskGroup || "None",
   });
 }
 

@@ -11,11 +11,16 @@ const TaskList = (props) => {
         <Task
           taskName={item.taskName}
           taskPriority={item.taskPriority}
+          taskDeadline={item.taskDeadline}
+          taskGroup={item.taskGroup}
+          taskLocation={item.taskLocation}
           colorTheme={props.colorTheme}
           editTask={props.editTask}
           taskKey={index}
           completed={item.taskCompleted}
           toggleCompleted={props.setTaskCompleted}
+          collapsed={item.collapsed}
+          toggleCollapsed={props.toggleCollapsed}
         />
     );
   };

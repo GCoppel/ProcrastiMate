@@ -5,40 +5,67 @@ import ToggleItem from "../components/ToggleItem";
 import TextField from "../components/TextField";
 import { auth } from "../firebase/FirebaseInitialize";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { UpdateSettings, GetSettings } from "../firebase/FirebaseFirestore";
+import { UpdateSettings, GetSettings, UpdateStudyStreak, GetStudyStreak, GetStudySessions } from "../firebase/FirebaseFirestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const COLOR_SCHEME_KEY = "colorScheme";
 
 const Settings = () => {
+  async function GetFirestoreStudySessions() {
+    const firestoreSessions = await GetStudySessions();
+    return firestoreSessions;
+  }
   async function GetFirestoreSettings() {
     const firestoreSettings = await GetSettings();
     return firestoreSettings;
+  }
+  async function GetFirestoreStreak() {
+    const firestoreStreak = await GetStudyStreak();
+    return firestoreStreak;
   }
 
   const navigation = useNavigation();
 
   const theme = useColorScheme();
   const darkColor = "#222227";
-  
+
+  const [studyStreak, setStudyStreak] = React.useState(1);
+  const [pastSessionsTotal, setPastSessionsTotal] = React.useState();
+
   const [darkModeEnabled, toggleDarkMode] = React.useState(theme === 'dark');
   const [notificationsEnabled, toggleNotifications] = React.useState(false);
   const [negativeReinforcementEnabled, toggleNegativeReinforcement] = React.useState(false);
   const [studyGoal, setStudyGoal] = React.useState("");
-  const [language, setLanguage] = React.useState("")
+  const [oldstudyGoal, setOldStudyGoal] = React.useState("");
+  const [language, setLanguage] = React.useState("");
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   useEffect(() => {
+    GetFirestoreStudySessions().then((data) => {
+      if (!data) {
+        return;
+      }
+      let totalMinutes = 0;
+      // Parse through all sessions:
+      Object.keys(data).forEach((key) => {
+        totalMinutes += data[key].sessionLength;
+      });
+      setPastSessionsTotal(totalMinutes);
+    });
     GetFirestoreSettings().then((data) => {
-      //toggleDarkMode(data.DarkMode);
       toggleNotifications(data.Notifications);
       toggleNegativeReinforcement(data.NegativeReinforcement);
       setStudyGoal(data.WeeklyStudyGoal);
+      setOldStudyGoal(data.WeeklyStudyGoal);
       setLanguage(data.Language)
     });
+    GetFirestoreStreak().then((streak) => {
+      setStudyStreak(streak);
+    })
   }, []);
 
   const SaveSettings = () => {
+    CheckStudyStreakNeedsDecrement();
     UpdateSettings(
       language,
       darkModeEnabled,
@@ -47,6 +74,13 @@ const Settings = () => {
       studyGoal
     );
   };
+
+  const CheckStudyStreakNeedsDecrement = async () => {
+    // If the new study goal would mean that this week's goal was not met, but we've already marked it as met, then we need to decrement it.
+    if ((studyGoal > pastSessionsTotal) && (oldstudyGoal <= pastSessionsTotal)){
+      UpdateStudyStreak(studyStreak-1)
+    }
+  }
 
   const SignOut = async () => {
     signOut(auth);

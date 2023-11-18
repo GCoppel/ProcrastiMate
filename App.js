@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const theme = useColorScheme();
-  StatusBar.setBarStyle(theme === "light" ? 'light-content':'dark-content')
+  StatusBar.setBarStyle(theme === "light" ? 'dark-content':'light-content')
   return (
     <>
       <NavigationContainer>

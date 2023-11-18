@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { SetDefaultSettings } from "../firebase/FirebaseFirestore";
+import { SetDefaultSettings, UpdateStudyStreak } from "../firebase/FirebaseFirestore";
 
 const LoginButton = (props) => {
   const { colorTheme, textColor, email, password } = props;
@@ -59,6 +59,7 @@ const RegisterButton = (props) => {
         const user = userCredentials.user;
         alert("Successfully registered with: " + user.email);
         SetDefaultSettings();
+        UpdateStudyStreak(0); // Start new user with '0' study streak score
       })
       .catch((error) => alert(error.message));
   };
