@@ -10,7 +10,10 @@ const TaskList = (props) => {
     return (
         <Task
           taskName={item.taskName}
+          taskEstimatedValue={item.taskEstimatedValue}
           taskPriority={item.taskPriority}
+          taskEstimatedTime={item.taskEstimatedTime}
+          taskDifficulty={item.taskDifficulty}
           taskDeadline={item.taskDeadline}
           taskGroup={item.taskGroup}
           taskLocation={item.taskLocation}

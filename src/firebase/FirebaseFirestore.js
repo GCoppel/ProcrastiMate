@@ -1,8 +1,6 @@
 import React from "react";
 import * as firebase from "firebase/app";
 import {
-  Timestamp,
-  getFirestore,
   updateDoc,
   deleteField,
 } from "firebase/firestore";
@@ -69,7 +67,7 @@ export async function GetSettings() {
   return settingsData;
 }
 
-export async function AddTaskToFirestore(taskID, taskName, taskPriority,  newTaskDeadline, newTaskLocation, newTaskGroup, taskComplete) {
+export async function AddTaskToFirestore(taskID, taskName, taskPriority, newTaskDifficulty, newTaskEstimatedTime, newTaskDeadline, newTaskLocation, newTaskGroup, taskComplete) {
   if (taskPriority == null) {
     taskPriority = "None";
   }
@@ -80,6 +78,8 @@ export async function AddTaskToFirestore(taskID, taskName, taskPriority,  newTas
         id: taskID,
         name: taskName,
         priority: taskPriority,
+        difficulty: newTaskDifficulty,
+        estimatedTime: newTaskEstimatedTime,
         deadline: newTaskDeadline,
         location: newTaskLocation,
         group: newTaskGroup,
@@ -91,13 +91,15 @@ export async function AddTaskToFirestore(taskID, taskName, taskPriority,  newTas
   return;
 }
 
-export async function EditFirestoreTask(taskId, newTaskName, newTaskPriority, newTaskDeadline, newTaskLocation, newTaskGroup) {
+export async function EditFirestoreTask(taskId, newTaskName, newTaskPriority, newTaskDifficulty, newTaskEstimatedTime, newTaskDeadline, newTaskLocation, newTaskGroup) {
   await updateDoc(doc(database, auth.currentUser.uid, "Todos"), {
     [`${taskId}.name`]: newTaskName,
-    [`${taskId}.priority`]: newTaskPriority || "None", // Set to 'None' if newTaskPriority is null
-    [`${taskId}.deadline`]: newTaskDeadline || "None",
-    [`${taskId}.location`]: newTaskLocation || "None",
-    [`${taskId}.group`]: newTaskGroup || "None",
+    [`${taskId}.priority`]: newTaskPriority || "---", // Set to '---' if newTaskPriority is null
+    [`${taskId}.difficulty`]: newTaskDifficulty || "---", // Set to '---' if newTaskDifficulty is null
+    [`${taskId}.estimatedTime`]: newTaskEstimatedTime || "---", // Set to '---' if newTaskEstimatedTime is null
+    [`${taskId}.deadline`]: newTaskDeadline || "---",
+    [`${taskId}.location`]: newTaskLocation || "---",
+    [`${taskId}.group`]: newTaskGroup || "--",
   });
 }
 

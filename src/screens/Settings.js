@@ -7,6 +7,7 @@ import { auth } from "../firebase/FirebaseInitialize";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { UpdateSettings, GetSettings, UpdateStudyStreak, GetStudyStreak, GetStudySessions } from "../firebase/FirebaseFirestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as frenchLang from "../json/Francais.json"
 
 const COLOR_SCHEME_KEY = "colorScheme";
 
@@ -37,7 +38,7 @@ const Settings = () => {
   const [negativeReinforcementEnabled, toggleNegativeReinforcement] = React.useState(false);
   const [studyGoal, setStudyGoal] = React.useState("");
   const [oldstudyGoal, setOldStudyGoal] = React.useState("");
-  const [language, setLanguage] = React.useState("");
+  const [language, setLanguage] = React.useState("English");
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   useEffect(() => {
@@ -123,7 +124,7 @@ const Settings = () => {
             colorTheme={darkModeEnabled? '#555555':darkColor}
             enabledTextColor={darkModeEnabled? "white":darkColor}
             disabledTextColor={darkModeEnabled? "#555555":"lightgrey"}
-            text={"Dark Mode"}
+            text={(language == "English")? "Dark Mode":frenchLang.Settings.DarkModeSettingMsg}
             type={"square"}
             isChecked={darkModeEnabled}
             setChecked={toggleColorScheme}
@@ -133,21 +134,11 @@ const Settings = () => {
             colorTheme={darkModeEnabled? '#555555':darkColor}
             enabledTextColor={darkModeEnabled? "white":darkColor}
             disabledTextColor={darkModeEnabled? "#555555":"lightgrey"}
-            text={"Notifications (Unavailable)"}
+            text={(language == "English")? "Notifications (Unavailable)":frenchLang.Settings.NotificationsSettingMsg}
             type={"square"}
             isChecked={notificationsEnabled}
             setChecked={toggleNotifications}
             disabled={true}
-          />
-          <ToggleItem
-            colorTheme={darkModeEnabled? '#555555':darkColor}
-            enabledTextColor={darkModeEnabled? "white":darkColor}
-            disabledTextColor={darkModeEnabled? "#555555":"lightgrey"}
-            text={"Negative Reinforcement"}
-            type={"square"}
-            isChecked={negativeReinforcementEnabled}
-            setChecked={toggleNegativeReinforcement}
-            disabled={false}
           />
         </View>
       </>
@@ -171,7 +162,7 @@ const Settings = () => {
               { backgroundColor: darkModeEnabled ? '#121212' : "white" },
             ]}
           >
-            <Text style={[{fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: (darkModeEnabled? 'white':darkColor)}]}>Language:</Text>
+            <Text style={[{fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: (darkModeEnabled? 'white':darkColor)}]}>{(language == "English")? "Language: ":frenchLang.Settings.LanguageSettingMsg}</Text>
             <TouchableOpacity onPress={() => ChangeLanguage("English")} style={[styles.languageButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
               <Text style={[{color: (darkModeEnabled? 'white':darkColor)}]}>English</Text>
             </TouchableOpacity>
@@ -179,15 +170,15 @@ const Settings = () => {
               <Text style={[{color: (darkModeEnabled? 'white':darkColor)}]}>Français</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={ShowHideLanguageModal} style={[styles.languageModalCancelButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
-              <Text style={[{fontSize: 16, fontWeight: 'bold',color: (darkModeEnabled? darkColor:darkColor)}]}>Cancel</Text>
+              <Text style={[{fontSize: 16, fontWeight: 'bold',color: (darkModeEnabled? darkColor:darkColor)}]}>{(language == "English")? "Cancel":frenchLang.Settings.CancelBtn}</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-      <Text style={[styles.settingsTitle, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Settings</Text>
+      <Text style={[styles.settingsTitle, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{(language == "English")? "Settings":frenchLang.Settings.SettingsHeaderMsg}</Text>
       <SettingsList />
       <View style={styles.textbox}>
-          <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Weekly Study Goal:</Text>
+          <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{(language == "English")? "Weekly Study Goal":frenchLang.Settings.WeeklyStudyGoalSettingMsg}</Text>
           <TextField
             colorTheme={darkModeEnabled? "white" : darkColor}
             text={studyGoal}
@@ -198,18 +189,18 @@ const Settings = () => {
           />
       </View>
       <View style={[styles.languageContainer, {marginTop: 0}]}>
-        <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Language:</Text>
-        <Text style={[styles.settingsWarning, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Requires app restart</Text>
+        <Text style={[styles.studyGoalText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{(language == "English")? "Language:":frenchLang.Settings.LanguageSettingMsg}</Text>
+        <Text style={[styles.settingsWarning, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{(language == "English")? "Requires app restart":frenchLang.Settings.RequiresRestartMsg}</Text>
         <TouchableOpacity onPress={ShowHideLanguageModal} style={[styles.languageButton, {borderColor: (darkModeEnabled? 'white':darkColor)}]}>
           <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{language}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.importantButtonsContainer}>
         <TouchableOpacity onPress={SaveSettings} style={[styles.signOutBtn, darkModeEnabled? {backgroundColor: 'white', borderColor: 'white'}:{backgroundColor: darkColor, borderColor: 'white'}]}>
-          <Text style={[styles.signOutText, darkModeEnabled? {color: 'black'}:{color:'white'}]}>Save Settings</Text>
+          <Text style={[styles.signOutText, darkModeEnabled? {color: 'black'}:{color:'white'}]}>{(language == "English")? "Save Settings":frenchLang.Settings.SaveBtn}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={SignOut} style={[styles.signOutBtn, darkModeEnabled? {backgroundColor: darkColor, borderColor: 'white'}:{backgroundColor: 'white', borderColor: darkColor}]}>
-          <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>Sign Out</Text>
+          <Text style={[styles.signOutText, darkModeEnabled? {color: 'white'}:{color:'black'}]}>{(language == "English")? "Sign Out":frenchLang.Settings.SignOutBtn}</Text>
         </TouchableOpacity>
       </View>
     </View>

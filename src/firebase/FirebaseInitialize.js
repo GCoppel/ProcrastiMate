@@ -25,21 +25,6 @@ if (firebase.getApps.length === 0) {
   app = firebase.getApp();
 }
 
-// let auth
-
-// if (firebase.auth)
-// try{
-//   alert("oh shit")
-//   (
-//   auth = initializeAuth(app, {
-//     persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-//   })
-// )}
-// catch(error){
-//   alert("fuck you")
-//   auth = getAuth(app)
-// }
-
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });

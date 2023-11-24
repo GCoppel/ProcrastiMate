@@ -28,18 +28,17 @@ const Task = (props) => {
         <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>
           {"Name: " + props.taskName}
         </Text>
-        {(props.taskPriority != "None")? 
+        {((props.taskEstimatedValue != 0) && (props.collapsed))? 
         <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>
-          {"Priority: " + props.taskPriority} 
+          {"Suggested Order: " + props.taskPriority} 
         </Text> : null
         }
         {props.collapsed? 
         null : 
         <>
-          {(props.taskPriority == "None")? <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>
-            {"Priority: " + props.taskPriority} 
-          </Text> : null
-          }
+          <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Priority: {props.taskPriority}</Text>
+          <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Estimated Time: {props.taskEstimatedTime}</Text>
+          <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Difficulty: {props.taskDifficulty}</Text>
           <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Deadline: {props.taskDeadline}</Text>
           <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Location: {props.taskLocation}</Text>
           <Text style={props.completed? {color: 'grey'}:{ color: props.colorTheme }}>Group: {props.taskGroup}</Text>

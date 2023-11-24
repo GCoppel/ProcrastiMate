@@ -1,0 +1,34 @@
+{
+    "NavigationBar": {
+        "HomeLabel": "Maison",
+        "StudyLabel": "Étudier",
+        "SettingsLabel": "Paramètres"
+    },
+    "Login": {
+        "WelcomeMsg": "Bienvenue sur ProcrastiMate!",
+        "EmailTextFieldMsg": "Email",
+        "PasswordTextFieldMsg": "Mot de passe",
+        "LoginBtn": "Se Connecter",
+        "RegisterBtn": "Registre"
+    },
+    "Home": {
+        "TasksHeaderMsg": "Tâches",
+        "TaskNameTextFieldMsg": "Nom de la tâche",
+        "TaskPriorityTextFieldMsg": "priorité (facultatif)",
+        "SortByMsg": "Trier par: ",
+        "EmptyTaskListMsg": "Vous n'avez aucune tâche pour le moment!",
+        "TaskNameMsg": "Nom: ",
+        "TaskSuggestedOrderMsg": "Commande suggérée: "
+    },
+    "Settings": {
+        "SettingsHeaderMsg": "Paramètres",
+        "DarkModeSettingMsg": "Mode Sombre",
+        "NotificationsSettingMsg": "Notifications (Indisponible)",
+        "WeeklyStudyGoalSettingMsg": "Objectif d'étude hebdomadaire:",
+        "LanguageSettingMsg": "Langue:",
+        "RequiresRestartMsg": "Nécessite un redémarrage",
+        "SignOutBtn": "Se déconnecter",
+        "SaveBtn": "Sauvegarder",
+        "CancelBtn": "Annuler"
+    }
+}

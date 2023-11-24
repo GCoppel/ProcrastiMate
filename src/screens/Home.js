@@ -24,8 +24,9 @@ import {
 } from "../firebase/FirebaseFirestore";
 import { setDoc, doc, getDoc, collection } from "firebase/firestore";
 import { ScrollView } from "react-native";
+import SortModal, { sortTasks } from "../components/SortModal";
 
-const LISTDATA = [];
+let LISTDATA = [];
 
 const Home = () => {
   const theme = useColorScheme();
@@ -35,25 +36,63 @@ const Home = () => {
   const [newTaskText, onNewTaskTextChange] = React.useState();
   const [newTaskPriority, onNewTaskPriorityChange] = React.useState();
 
-  const [sortMode, setSortMode] = React.useState("highestPriority");
+  const [sortMode, setSortMode] = React.useState("Suggested Order");
+  const [sortDirection, setSortDirection] = React.useState("highest");
+
+  // Function to calculate estimated value for a task
+  const calculateEstimatedValue = (priority, difficulty, estimatedTime) => {
+    // Normalize values to a scale of 0 to 1
+    const normalizedImportance = priority / 9.0;
+    const normalizedDifficulty = difficulty / 9.0;
+    const normalizedEstimatedTime = estimatedTime / 999.0;
+
+    // Calculate the estimated value using weighted sum
+    const estimatedValue =
+      0.5 * normalizedImportance +
+      0.25 * normalizedDifficulty +
+      0.25 * normalizedEstimatedTime;
+
+    return estimatedValue;
+  };
 
   function AddTask() {
     let newItem = {
       taskID: Date.now(),
       taskName: newTaskText,
-      taskPriority: !newTaskPriority ? "None" : newTaskPriority,
+      taskEstimatedValue: 0,
+      taskPriority: !newTaskPriority ? "---" : newTaskPriority,
+      taskEstimatedTime: 0,
+      taskDifficulty: 0,
       taskCompleted: false,
-      taskDeadline: "None",
-      taskGroup: "None",
-      taskLocation: "None",
+      taskDeadline: "---",
+      taskGroup: "---",
+      taskLocation: "---",
       isDarkMode: isDarkMode,
-      collapsed: true
+      collapsed: true,
     };
+    if (newItem.taskPriority && newItem.taskDifficulty && newItem.taskEstimatedTime){
+      newItem.taskEstimatedValue = calculateEstimatedValue(newItem.taskPriority, newItem.taskDifficulty, newItem.taskEstimatedTime);
+    }
     LISTDATA.push(newItem);
-    AddTaskToFirestore(newItem.taskID, newItem.taskName, newItem.taskPriority, newItem.taskDeadline, newItem.taskLocation, newItem.taskGroup, newItem.taskCompleted);
+    AddTaskToFirestore(
+      newItem.taskID,
+      newItem.taskName,
+      newItem.taskPriority,
+      newItem.taskDifficulty,
+      newItem.taskEstimatedTime,
+      newItem.taskDeadline,
+      newItem.taskLocation,
+      newItem.taskGroup,
+      newItem.taskCompleted
+    );
     onNewTaskTextChange("");
     onNewTaskPriorityChange("");
   }
+
+  useEffect(() => {
+    LISTDATA = sortTasks(sortMode, LISTDATA)
+    setForceRefreshCheat(!forceRefreshCheat)
+  }, [sortMode])
 
   async function GetFireStoreTasks() {
     const firestoreTasks = await GetTasks();
@@ -66,13 +105,17 @@ const Home = () => {
   }, [forceRefreshCheat]);
 
   function compareTasks(a, b) {
-    if (a.taskPriority > b.taskPriority) {
+    if (a.estimatedValue > b.estimatedValue) {
       return 1;
     }
-    if (a.taskPriority < b.taskPriority) {
+    if (a.estimatedValue < b.estimatedValue) {
       return -1;
     }
     return 0;
+  }
+
+  const updateSorting = (newMode) => {
+    setSortMode(newMode)
   }
 
   useEffect(() => {
@@ -88,58 +131,71 @@ const Home = () => {
         let newItem = {
           taskID: data[key].id,
           taskName: data[key].name,
+          taskEstimatedValue: 0,
           taskPriority: data[key].priority,
+          taskEstimatedTime: data[key].estimatedTime,
+          taskDifficulty: data[key].difficulty,
           taskCompleted: data[key].complete,
-          taskDeadline: "December 11, 2023",
-          taskGroup: "Graduation Stuff",
-          taskLocation: "Home",
+          taskDeadline: data[key].deadline,
+          taskGroup: data[key].group,
+          taskLocation: data[key].location,
           collapsed: true, // Always collapsed on page open
         };
-        if (newItem.taskPriority == "None") {
-          noPriorityTasks.push(newItem);
-        } else {
+        if ((newItem.taskPriority != "---") && (newItem.taskDifficulty != "---") && (newItem.taskEstimatedTime != "---")){
+          newItem.taskEstimatedValue = calculateEstimatedValue(newItem.taskPriority, newItem.taskDifficulty, newItem.taskEstimatedTime);
           LISTDATA.push(newItem);
+        }
+        // if (newItem.taskEstimatedValue == "0") {
+        //   noPriorityTasks.push(newItem);
+        else {
+          noPriorityTasks.push(newItem);
         }
       });
       // First order by highest priority
-      LISTDATA.sort(compareTasks);
       for (i in noPriorityTasks) {
         LISTDATA.push(noPriorityTasks[i]);
-      }
-      if (sortMode == "lowestPriority") {
-        // Then reverse order if lowest priority sort is active
-        LISTDATA.reverse();
       }
       setForceRefreshCheat(true);
     });
   }, []);
 
-  const [taskEnabled, toggleTaskEnabled] = React.useState(false);
+  const [sortModalVisible, setSortModalVisible] = React.useState(false);
+
   const [editModalVisible, setEditModalVisible] = React.useState(false);
   const [editModalTaskIndex, setEditModalTaskIndex] = React.useState(0);
   const [editModalTaskName, setEditModalTaskName] = React.useState("");
   const [editModalTaskPriority, setEditModalTaskPriority] = React.useState("");
+  const [editModalTaskDifficulty, setEditModalTaskDifficulty] =
+    React.useState("");
+  const [editModalTaskEstimatedTime, setEditModalTaskEstimatedTime] =
+    React.useState("");
   const [editModalTaskDeadline, setEditModalTaskDeadline] = React.useState("");
   const [editModalTaskLocation, setEditModalTaskLocation] = React.useState("");
   const [editModalTaskGroup, setEditModalTaskGroup] = React.useState("");
 
   const collapseTask = (taskIndex) => {
-    LISTDATA[taskIndex].collapsed = !(LISTDATA[taskIndex].collapsed); // Collapse/Expand Task
+    LISTDATA[taskIndex].collapsed = !LISTDATA[taskIndex].collapsed; // Collapse/Expand Task
     setForceRefreshCheat(!forceRefreshCheat); // Force refresh on TaskList
-  }
+  };
   const editTask = (taskIndex) => {
     setEditModalTaskIndex(taskIndex);
     setEditModalTaskName(LISTDATA[taskIndex].taskName);
-    if (LISTDATA[taskIndex].taskPriority != "None") {
+    if (LISTDATA[taskIndex].taskPriority != "---") {
       setEditModalTaskPriority(LISTDATA[taskIndex].taskPriority);
     }
-    if (LISTDATA[taskIndex].taskDeadline != "None") {
+    if (LISTDATA[taskIndex].taskDifficulty != "---") {
+      setEditModalTaskDifficulty(LISTDATA[taskIndex].taskDifficulty);
+    }
+    if (LISTDATA[taskIndex].taskEstimatedTime != "---") {
+      setEditModalTaskEstimatedTime(LISTDATA[taskIndex].taskEstimatedTime);
+    }
+    if (LISTDATA[taskIndex].taskDeadline != "---") {
       setEditModalTaskDeadline(LISTDATA[taskIndex].taskDeadline);
     }
-    if (LISTDATA[taskIndex].taskLocation != "None") {
+    if (LISTDATA[taskIndex].taskLocation != "---") {
       setEditModalTaskLocation(LISTDATA[taskIndex].taskLocation);
     }
-    if (LISTDATA[taskIndex].taskGroup != "None") {
+    if (LISTDATA[taskIndex].taskGroup != "---") {
       setEditModalTaskGroup(LISTDATA[taskIndex].taskGroup);
     }
     setEditModalVisible(true);
@@ -147,13 +203,20 @@ const Home = () => {
   const saveEdit = () => {
     LISTDATA[editModalTaskIndex].taskName = editModalTaskName;
     LISTDATA[editModalTaskIndex].taskPriority = editModalTaskPriority;
+    LISTDATA[editModalTaskIndex].taskDifficulty = editModalTaskDifficulty;
+    LISTDATA[editModalTaskIndex].taskEstimatedTime = editModalTaskEstimatedTime;
+    LISTDATA[editModalTaskIndex].taskDeadline = editModalTaskDeadline;
+    LISTDATA[editModalTaskIndex].taskLocation = editModalTaskLocation;
+    LISTDATA[editModalTaskIndex].taskGroup = editModalTaskGroup;
     EditFirestoreTask(
       LISTDATA[editModalTaskIndex].taskID,
       LISTDATA[editModalTaskIndex].taskName,
       LISTDATA[editModalTaskIndex].taskPriority,
+      LISTDATA[editModalTaskIndex].taskDifficulty,
+      LISTDATA[editModalTaskIndex].taskEstimatedTime,
       LISTDATA[editModalTaskIndex].taskDeadline,
       LISTDATA[editModalTaskIndex].taskLocation,
-      LISTDATA[editModalTaskIndex].taskGroup,
+      LISTDATA[editModalTaskIndex].taskGroup
     );
     closeEditModal();
   };
@@ -161,13 +224,13 @@ const Home = () => {
     DeleteFirestoreTask(LISTDATA[editModalTaskIndex].taskID);
     LISTDATA.splice(editModalTaskIndex, 1);
     closeEditModal();
-  }
+  };
   const setTaskCompleted = (taskIndex) => {
-    let isComplete = !(LISTDATA[taskIndex].taskCompleted);
+    let isComplete = !LISTDATA[taskIndex].taskCompleted;
     MarkFirestoreTaskComplete(LISTDATA[taskIndex].taskID, isComplete);
     LISTDATA[taskIndex].taskCompleted = isComplete;
     setForceRefreshCheat(!forceRefreshCheat); // Call a refresh to make the TaskList update its appearance
-  }
+  };
   const closeEditModal = () => {
     setEditModalVisible(false);
     setEditModalTaskName("");
@@ -229,11 +292,37 @@ const Home = () => {
                 </Text>
                 <TextField
                   colorTheme={isDarkMode ? "white" : darkColor}
-                  text={editModalTaskPriority}
+                  text={editModalTaskPriority.toString()}
                   onChangeText={setEditModalTaskPriority}
                   type={"Task Priority"}
                   entryType={"number-pad"}
                   characterLimit={1}
+                />
+              </View>
+              <View style={styles.editPanel}>
+                <Text style={[styles.editHeader, { color: "white" }]}>
+                  Difficulty:
+                </Text>
+                <TextField
+                  colorTheme={isDarkMode ? "white" : darkColor}
+                  text={editModalTaskDifficulty.toString()}
+                  onChangeText={setEditModalTaskDifficulty}
+                  type={"Task Difficulty"}
+                  entryType={"number-pad"}
+                  characterLimit={1}
+                />
+              </View>
+              <View style={styles.editPanel}>
+                <Text style={[styles.editHeader, { color: "white" }]}>
+                  Estimated Min:
+                </Text>
+                <TextField
+                  colorTheme={isDarkMode ? "white" : darkColor}
+                  text={editModalTaskEstimatedTime.toString()}
+                  onChangeText={setEditModalTaskEstimatedTime}
+                  type={"Est. Minutes to Complete"}
+                  entryType={"number-pad"}
+                  characterLimit={3}
                 />
               </View>
               <View style={styles.editPanel}>
@@ -282,12 +371,25 @@ const Home = () => {
                   { borderColor: isDarkMode ? "white" : darkColor },
                 ]}
               >
-                <Text style={[{ fontWeight: 'bold', color: isDarkMode ? "white" : darkColor }]}>
+                <Text
+                  style={[
+                    {
+                      fontWeight: "bold",
+                      color: isDarkMode ? "white" : darkColor,
+                    },
+                  ]}
+                >
                   Save Changes
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={deleteTask} style={[styles.saveChangesButton, {borderColor: '#af2525', marginBottom: '50%'}]}>
-                <Text style={{fontWeight: 'bold', color: '#ef2525'}}>
+              <TouchableOpacity
+                onPress={deleteTask}
+                style={[
+                  styles.saveChangesButton,
+                  { borderColor: "#af2525", marginBottom: "50%" },
+                ]}
+              >
+                <Text style={{ fontWeight: "bold", color: "#ef2525" }}>
                   Delete Task
                 </Text>
               </TouchableOpacity>
@@ -317,6 +419,7 @@ const Home = () => {
           </View>
         </View>
       </Modal>
+      <SortModal isDarkMode={isDarkMode} visible={sortModalVisible} setModalVisible={setSortModalVisible} changeSortMode={setSortMode} updateSorting={updateSorting} />
       <View style={HomeStyles.header}>
         <Text
           style={[
@@ -362,6 +465,9 @@ const Home = () => {
           taskData={LISTDATA}
         />
       </View>
+      <TouchableOpacity onPress={() => setSortModalVisible(true)} style={[styles.sortButton, {borderColor: (isDarkMode? 'white':darkColor)}]}>
+        <Text style={{fontWeight: '700', color: (isDarkMode? 'white':darkColor)}}>Sort By: {sortMode}</Text>
+      </TouchableOpacity>
       <View style={HomeStyles.body}>
         <TaskList
           data={LISTDATA}
@@ -435,5 +541,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomWidth: 0,
+  },
+  sortButton: {
+    alignSelf: 'center',
+    borderWidth: 3,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 6
   },
 });
