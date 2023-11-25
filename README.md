@@ -99,20 +99,20 @@ ___
 ## Screenshots - Dark Mode vs Light Mode
 ![The login page in dark mode. Contains a text field for the user's email address, a text field for the user's password, a "Login" button, and a "Register" button.](/Demo_Screenshots/Login_Dark.jpg)
 ![The login page in light mode. Contains a text field for the user's email address, a text field for the user's password, a "Login" button, and a "Register" button.](/Demo_Screenshots/Login_Light.jpg)
-__Login Page.__
+<br/>__Login Page.__
 
 ![The homepage in dark mode. Contains a vertically-scrollable list of tasks. Each task has a name, edit button, and a checkbox to mark it as complete or incomplete. At the top are a pair of text fields which the user can use to create a new task.](/Demo_Screenshots/Tasks_Dark.jpg)
 ![The homepage in light mode. Contains a vertically-scrollable list of tasks. Each task has a name, edit button, and a checkbox to mark it as complete or incomplete. At the top are a pair of text fields which the user can use to create a new task.](/Demo_Screenshots/Tasks_Light.jpg)
-__Homepage, contains the to-do list__
+<br/>__Homepage, contains the to-do list__
 
 ![The study page in dark mode. Shows the user's study streak score, the number of minutes they have studied this week, and their percentage towards completing their goal. There is a button labeled "Study" in the center to take the user to the session page.](/Demo_Screenshots/Study_Dark.jpg)
 ![The study page in light mode. Shows the user's study streak score, the number of minutes they have studied this week, and their percentage towards completing their goal. There is a button labeled "Study" in the center to take the user to the session page.](/Demo_Screenshots/Study_Light.jpg)
-__Study page, shows progress towards completing the user's weekly goal and is used as the entrypoint to the session page.__
+<br/>__Study page, shows progress towards completing the user's weekly goal and is used as the entrypoint to the session page.__
 
 ![The session page in dark mode. Contains a timer with start, pause, resume, and reset buttons.](/Demo_Screenshots/Session_Dark.jpg)
 ![The session page in light mode. Contains a timer with start, pause, resume, and reset buttons.](/Demo_Screenshots/Session_Light.jpg)
-__Session page, contains a timer that the user starts when they begin studying. Time adds to the user's weekly total. When the student meets their weekly goal, their study score is incremented.__
+<br/>__Session page, contains a timer that the user starts when they begin studying. Time adds to the user's weekly total. When the student meets their weekly goal, their study score is incremented.__
 
 ![The settings page in dark mode. Contains a toggle for the dark mode to be enabled or disabled, a textbox where the user can input their weekly study goal in minutes, and a dropdown menu where the user can choose between english and french.](/Demo_Screenshots/Settings_Dark.jpg)
 ![The settings page in light mode. Contains a toggle for the dark mode to be enabled or disabled, a textbox where the user can input their weekly study goal in minutes, and a dropdown menu where the user can choose between english and french.](/Demo_Screenshots/Settings_Light.jpg)
-__Settings page.__
+<br/>__Settings page.__
