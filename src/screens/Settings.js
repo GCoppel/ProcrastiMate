@@ -113,7 +113,6 @@ const Settings = () => {
     Appearance.setColorScheme(newColorScheme);
     // Save color scheme preference to AsyncStorage
     AsyncStorage.setItem(COLOR_SCHEME_KEY, newColorScheme);
-    //console.log(newColorScheme + " " + Appearance.getColorScheme());
   };
 
   const SettingsList = () => {
