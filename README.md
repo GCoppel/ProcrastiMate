@@ -1,42 +1,8 @@
-# ProcrastiMate
+# ProcrastiMate - Your Study-Buddy for Getting Things Done
 ### Author: George Coppel
-__This project fulfills the University of Alabama in Huntsville Honors Thesis requirement.__
+__This project is in partial fulfillment of the University of Alabama in Huntsville Honors Capstone.__
 ___
-## CURRENT PROJECT STATE
-- A visual overhaul of the entire application is coming, but functionality is the current focus.
-- The "Login" screen is functional.
-  - Users can create a new account using email and password.
-    - Passwords are automatically hidden as the user types.
-  - Users can logo into their existing account using email and password.
-    - The default Android/iOS "email" keyboard is used.
-  - Accounts are managed by Google's FireBase cloud system.
-  - Account Requirements:
-    - Cannot use emails already associated with an account.
-    - Emails must be in the form of ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov)$
-    - Passwords must be at least 6 characters
-- Upon successful login, the user is taken to the "Home" screen.
-  - This is where the user's To-Do list will live. Users can use the input fields and "add" button to add tasks to the list.
-    - The first field is the task name.
-    - The second field is the task priority. If this is left blank, no priority value will be added.
-      - Currently limited to a single character, meaning priority ranges from 0-9
-      - Will be replaced with a series of 5 buttons, limiting the range from 1-5
-    - There is currently no way to save, edit, or delete tasks.
-  - There is a header panel which holds information about the user's Study Streak and weekly study progress.
-    - Currently, there is a counter which can be incremented using the "Study" buton.
-    - This will be completely changed soon, for now it is just a placeholder.
-- Tne next screen, accessible by the navigation bar at the bottom, is the "Study" screen.
-  - This is where the user will be able to start their study timer and complete their weekly study goal.
-  - At the top is a randomized motivational message.
-  - In the center of the screen is the "Go" or "Start" button (haven't decided what to label it as yet)
-    - Currently non-functional, but will create a new "Study Session" and start the timer for the session.
-- The third and final screen is the Settings screen.
-  - Here, the user will be able to modify the app's appearance and behavior
-  - There are currently three checkboxes, none of which do anything at the moment
-    - "Dark Mode" -> The most important feature of any app. You know what this does.
-    - "Notification" -> App notifications will only be sent if this feature is enabled.
-    - "Third Option" -> I'll probably come up with at least one more setting toggle later.
-  - Sign out button
-    - Signs the active user out of the Firebase authenticator instance and returns them to the Login Screen.
+![ProcrastiMate logo image with cyan background.](/assets/Logo_Variants/ProcrastiMate-logos.jpeg)
 ___
 ## How to Test Using Expo
 ProcrastiMate is built using Expo. Expo is a populat React Native build tool, allowing for faster and easier testing with real devices. 
@@ -44,6 +10,7 @@ It does provide an all-in-one Android and iOS build tool for producing .apk and 
 This allows for much easier and faster development as it eliminates the need to constantly make builds or use device emulators. If you've ever used Vite with a web framework/library, like React (non-native), Expo is essentially the React Native version of that.
 
 __To test the app on your mobile device, do the following:__
+<br/>_Note: iOS currently has a bug where users cannot collapse the keyboard after focusing on a textfield. This will maybe be fixed soon, but also maybe not since Android is the main target platform._
 1. Download the Expo Go app on your mobile device.
 2. Clone this repository to a Windows or Linux computer.
 3. Navigate to the project's root directory.
@@ -75,8 +42,6 @@ ProcrastiMate helps users to keep productive and stop procrastinating.
   - All data will be tied to the user’s account and only accessible by them.
 -Users can create a weekly study plan that they want to follow.
   - This plan can be modified at any time.
-  - The application will ask the user to follow that study plan each week and occasionally give
-them reminder notifications if they haven’t completed the current week’s plan.
   - The user can complete their study plan by starting a timer when they begin studying. When
 they are done, they stop the timer. The elapsed time is saved as a “Study Session” and
 applied to the user’s study plan for the current week.
@@ -93,10 +58,9 @@ of successive weeks that the user has completed their chosen study plan.
 - Users can add individual tasks to a to-do list.
   - Each task will have a checkbox that allows the user to mark tasks as completed.
   - Tasks can have the following associated information with them:
-    - Time – How long it should take to complete in minutes
-    - Difficulty – On a 1-10 scale, how hard and mentally taxing it will be to complete
-    - Importance – On a 1-5 scale, how quickly does this need to be done
-    - Deadline – The date that the task must be completed by
+    - Estimated Time – How long it should take to complete in minutes
+    - Difficulty – On a 0-9 scale, how hard and mentally taxing it will be to complete
+    - Priority – On a 0-9 scale, how quickly does this need to be done
   - This information will be used to suggest the order that the tasks should be completed in.
     - I may have it suggest multiple orders that the student can choose from.
   - Each task detail will be assigned a weight that will contribute to the total “Importance
@@ -131,25 +95,24 @@ to a standard to-do list application. Once users build up even a small score, th
 because they don’t want to lose the score. Additionally, like Duolingo, the app will send users
 occasional notifications reminding them to study or complete tasks on their to-do list. This will make it
 much harder for the user to forget about or ignore their work.
+___
+## Screenshots - Dark Mode vs Light Mode
+![The login page in dark mode. Contains a text field for the user's email address, a text field for the user's password, a "Login" button, and a "Register" button.](/Demo_Screenshots/Login_Dark.jpg)
+![The login page in light mode. Contains a text field for the user's email address, a text field for the user's password, a "Login" button, and a "Register" button.](/Demo_Screenshots/Login_Light.jpg)
+__Login Page.__
 
-## Stretch Goals and Bonus Features
-- A web version of the application.
-  - Because user data will be stored remotely, a web application would also be able to access
-the data.
-  - Additionally, because the mobile app is likely going to use React Native, creating a React
-web application should be a fairly straightforward port.
-    - Most of the work would have to do with styling the web version and making it
-responsive for both desktop and mobile.
-  - A web version would be useful because it is much easier to type on a physical keyboard
-then on a smartphone keyboard. Users would be able to add new tasks through a
-laptop/desktop and view them on their smartphone.
-  - This is unlikely to be finished by the project deadline, but, if there is extra time, I think
-getting even a very basic version of the application connected to the database would be
-considered a success.
-- Ability for users to upload “evidence” of having studied in the form of pictures.
-  - I’m unlikely to add this one, but if I finish REALLY early, then I may include this feature. I’m not sure how it would work quite yet, but it would be interesting if I can refine it more.
-  - Pictures are associated with each week’s study plan.
-  - Cleared out each semester?
-  - Problem: I am not planning to carry over any information other than the banked time, Study
-Streak score, and uncompleted tasks from week-to-week. For this feature to make sense,
-that would have to change so that there is some history of what work was done each week.
+![The homepage in dark mode. Contains a vertically-scrollable list of tasks. Each task has a name, edit button, and a checkbox to mark it as complete or incomplete. At the top are a pair of text fields which the user can use to create a new task.](/Demo_Screenshots/Tasks_Dark.jpg)
+![The homepage in light mode. Contains a vertically-scrollable list of tasks. Each task has a name, edit button, and a checkbox to mark it as complete or incomplete. At the top are a pair of text fields which the user can use to create a new task.](/Demo_Screenshots/Tasks_Light.jpg)
+__Homepage, contains the to-do list__
+
+![The study page in dark mode. Shows the user's study streak score, the number of minutes they have studied this week, and their percentage towards completing their goal. There is a button labeled "Study" in the center to take the user to the session page.](/Demo_Screenshots/Study_Dark.jpg)
+![The study page in light mode. Shows the user's study streak score, the number of minutes they have studied this week, and their percentage towards completing their goal. There is a button labeled "Study" in the center to take the user to the session page.](/Demo_Screenshots/Study_Light.jpg)
+__Study page, shows progress towards completing the user's weekly goal and is used as the entrypoint to the session page.__
+
+![The session page in dark mode. Contains a timer with start, pause, resume, and reset buttons.](/Demo_Screenshots/Session_Dark.jpg)
+![The session page in light mode. Contains a timer with start, pause, resume, and reset buttons.](/Demo_Screenshots/Session_Light.jpg)
+__Session page, contains a timer that the user starts when they begin studying. Time adds to the user's weekly total. When the student meets their weekly goal, their study score is incremented.__
+
+![The settings page in dark mode. Contains a toggle for the dark mode to be enabled or disabled, a textbox where the user can input their weekly study goal in minutes, and a dropdown menu where the user can choose between english and french.](/Demo_Screenshots/Settings_Dark.jpg)
+![The settings page in light mode. Contains a toggle for the dark mode to be enabled or disabled, a textbox where the user can input their weekly study goal in minutes, and a dropdown menu where the user can choose between english and french.](/Demo_Screenshots/Settings_Light.jpg)
+__Settings page.__
